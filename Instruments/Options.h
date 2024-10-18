@@ -1,22 +1,22 @@
 #include <iostream>
-#include <math.h>
+#include <cmath>
 using namespace std;
 
 class StockOption {
 private:
-    double stockPrice;      //Current stock price (S)
-    double strikePrice;     //Strike price of the option (K)
-    double timeToMaturity;  //Time to maturity (T) in years
-    double volatility;      //Volatility (sigma) in %
-    double riskFreeRate;    //Risk-free interest rate (r) in %
-    double dividendYield;   //Dividend yield (q)
+    double stockPrice;      // Current stock price (S)
+    double strikePrice;     // Strike price of the option (K)
+    double timeToMaturity;  // Time to maturity (T) in years
+    double volatility;      // Volatility (sigma) in %
+    double riskFreeRate;    // Risk-free interest rate (r) in %
+    double dividendYield;   // Dividend yield (q)
 
-    //Standard normal cumulative distribution function
+    // Standard normal cumulative distribution function
     double N(double x) const {
         return 0.5 * (1.0 + erf(x / sqrt(2.0)));
     }
 
-    //Normal density function
+    // Normal density function
     double f(double x) const {
         return exp(-x * x * 0.5) / sqrt(2 * 3.141592);
     }
