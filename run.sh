@@ -12,7 +12,7 @@ while [ $(($(date +%s) - START)) -lt $DURATION ]; do
 	TEMP=$(vcgencmd measure_temp)
 	echo "Current temperature: $TEMP"
 
-	./MonPremierTest.exe
+	./bondprice
 	echo -e "\nDone."
 
 	TEMP=$(vcgencmd measure_temp)

@@ -25,8 +25,8 @@ private:
 	}
 
 public:
-	Bond(std::string name, double fV, double c, std::string date1, std::string date2, double f):
-		issuer(name), faceValue(fV), coupon(c), issueDate(date1), maturityDate(date2), frequency(f) {}
+	Bond(const std::string& name, double fV, double c, const std::string& date1, const std::string& date2, double f) :
+    issuer(name), faceValue(fV), coupon(c), issueDate(date1), maturityDate(date2), frequency(f) {}
 
 	double price(double discountRate) {
 		double couponPayment = (coupon*faceValue)/frequency;
