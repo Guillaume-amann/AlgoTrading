@@ -1,86 +1,77 @@
 #include <iostream>
 #include <math.h>
-#include <vector>
-#include <stdio.h>
 using namespace std;
 
-// N(0,1) density
-double f(double x) {
-  double pi = 4.0*atan(1.0);
- return exp(-x*x*0.5) / sqrt(2 * pi);
-}
+class StockOption {
+private:
+    double stockPrice;      //Current stock price (S)
+    double strikePrice;     //Strike price of the option (K)
+    double timeToMaturity;  //Time to maturity (T) in years
+    double volatility;      //Volatility (sigma) in %
+    double riskFreeRate;    //Risk-free interest rate (r) in %
+    double dividendYield;   //Dividend yield (q)
 
-// Boole's Rule
-double Boole(double StartPoint, double EndPoint, int n) {
- vector<double> X(n + 1, 0.0);
- vector<double> Y(n + 1, 0.0);
- double delta_x = (EndPoint - StartPoint) / double(n);
- for (int i = 0; i <= n; i++) {
-  X[i] = StartPoint + i*delta_x;
-  Y[i] = f(X[i]);
- }
- double sum = 0;
- for (int t = 0; t <= (n - 1) / 4; t++) {
-  int ind = 4 * t;
-  sum += (1 / 45.0)*(14 * Y[ind] + 64 * Y[ind + 1] + 24 * Y[ind + 2] + 64 * Y[ind + 3] + 14 * Y[ind + 4])*delta_x;
- }
- return sum;
-}
+    //Standard normal cumulative distribution function
+    double N(double x) const {
+        return 0.5 * (1.0 + erf(x / sqrt(2.0)));
+    }
 
-// N(0,1) cdf by Boole's Rule
-double N(double x) {
- return Boole(-10.0, x, 240);
-}
+    //Normal density function
+    double f(double x) const {
+        return exp(-x * x * 0.5) / sqrt(2 * 3.141592);
+    }
 
-// Black-Scholes Call Price
-double BSPrice(double S, double K, double T, double r, double q, double v, char OpType)
-{
- double d = (log(S / K) + T*(r - q + 0.5*v*v)) / (v*sqrt(T));
- double call = S* exp(-q*T)*N(d) - exp(-r*T)*K*N(d - v*sqrt(T));
- if (OpType == 'C')
-  return call;
- else
-  return call - S* exp(-q*T) + K*exp(-r*T);
-}
-// Black-Scholes Delta
-double BSDelta(double S, double K, double T, double r, double q, double v, char OpType)
-{
- double d = (log(S / K) + T*(r - q + 0.5*v*v)) / (v*sqrt(T));
- if (OpType == 'C')
-  return exp(-q*T)*N(d);
- else
-  return exp(-q*T)*(N(d) - 1);
-}
+    double d1() const {
+        return (log(stockPrice / strikePrice) + (riskFreeRate - dividendYield + 0.5 * volatility * volatility) * timeToMaturity) 
+               / (volatility * sqrt(timeToMaturity));
+    }
 
-// Black-Scholes Gamma
-double BSGamma(double S, double K, double T, double r, double q,  double v)
-{
- double d = (log(S / K) + T*(r - q + 0.5*v*v)) / (v*sqrt(T));
- return f(d) * exp(-q*T) / S / v / sqrt(T);
-}
+    double d2() const {
+        return d1() - volatility * sqrt(timeToMaturity);
+    }
 
-// Black-Scholes Vega
-double BSVega(double S, double K, double T, double r, double q,  double v)
-{
- double d = (log(S / K) + T*(r - q + 0.5*v*v)) / (v*sqrt(T));
- return S*f(d) * exp(-q*T) *sqrt(T);
-}
+public:
+    StockOption(double S, double K, double T, double sigma, double r, double q = 0.0)
+        : stockPrice(S), strikePrice(K), timeToMaturity(T), volatility(sigma), riskFreeRate(r), dividendYield(q) {}
 
-// Black-Scholes Rho
-double BSRho(double S, double K, double T, double r, double q,   double v, char OpType)
-{
- double d = (log(S / K) + T*(r - q + 0.5*v*v)) / (v*sqrt(T));
- if (OpType == 'C')
-  return T*K*exp(-r*T)*N(d - v*sqrt(T));
- else
-  return -T*K*exp(-r*T)*N(v*sqrt(T) - d);
-}
-// Black-Scholes Theta
-double BSTheta(double S, double K, double T, double r, double q,   double v, char OpType)
-{
- double d = (log(S / K) + T*(r - q + 0.5*v*v)) / (v*sqrt(T));
- if (OpType == 'C')
-  return (-S*f(d) * exp(-q*T) *v / 2 / sqrt(T)) + q*exp(-q*T)*S*N(d) - r*K*exp(-r*T)*N(d - v*sqrt(T));
- else
-  return (-S*f(d) * exp(-q*T) *v / 2 / sqrt(T)) - q*exp(-q*T)*S*N(-d) + r*K*exp(-r*T)*N(v*sqrt(T) - d);
-}
+    double callPrice() const {
+        return stockPrice * exp(-dividendYield * timeToMaturity) * N(d1()) - strikePrice * exp(-riskFreeRate * timeToMaturity) * N(d2());
+    }
+
+    double putPrice() const {
+        return strikePrice * exp(-riskFreeRate * timeToMaturity) * N(-d2()) - stockPrice * exp(-dividendYield * timeToMaturity) * N(-d1());
+    }
+
+    double delta(char OpType) const {
+        if (OpType == 'C')
+            return exp(-dividendYield * timeToMaturity) * N(d1());
+        else
+            return exp(-dividendYield * timeToMaturity) * (N(d1()) - 1);
+    }
+
+    double gamma() const {
+        return f(d1()) * exp(-dividendYield * timeToMaturity) / (stockPrice * volatility * sqrt(timeToMaturity));
+    }
+
+    double vega() const {
+        return stockPrice * f(d1()) * exp(-dividendYield * timeToMaturity) * sqrt(timeToMaturity);
+    }
+
+    double rho(char OpType) const {
+        if (OpType == 'C')
+            return timeToMaturity * strikePrice * exp(-riskFreeRate * timeToMaturity) * N(d2());
+        else
+            return -timeToMaturity * strikePrice * exp(-riskFreeRate * timeToMaturity) * N(-d2());
+    }
+
+    double theta(char OpType) const {
+        double term1 = (-stockPrice * f(d1()) * exp(-dividendYield * timeToMaturity) * volatility) / (2 * sqrt(timeToMaturity));
+        double term2 = dividendYield * stockPrice * exp(-dividendYield * timeToMaturity) * N(d1());
+        double term3 = riskFreeRate * strikePrice * exp(-riskFreeRate * timeToMaturity) * N(d2());
+
+        if (OpType == 'C')
+            return term1 - term2 - term3;
+        else
+            return term1 + term2 + riskFreeRate * strikePrice * exp(-riskFreeRate * timeToMaturity) * N(-d2());
+    }
+};

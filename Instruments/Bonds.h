@@ -1,31 +1,31 @@
 #include <iostream>
-#include <string>
 #include <cmath>			//need for pow() function
 #include <ctime>			//need for date manipulation
+using namespace std;
 
 class Bond {
 private:
-	std::string issuer;		//Company or governemnt issuing the bond
+	string issuer;			//Company or governemnt issuing the bond
 	double faceValue;		//Face value or principal issued
 	double coupon;			//Coupon rate in %
-	std::string issueDate;		//Date of Issue "YYYY-MM-DD"
-	std::string maturityDate;	//Date of maturity "YYYY-MM-DD"
+	string issueDate;		//Date of Issue "YYYY-MM-DD"
+	string maturityDate;	//Date of maturity "YYYY-MM-DD"
 	double frequency;		//Payment frequency (0.5: every 2y, 1: annually, 2: semi-annually, ...)
 	
-	double maturity(const std::string& startDate, const std::string& endDate) {
-		struct std::tm start ={}, end ={};
+	double maturity(const string& startDate, const string& endDate) {
+		struct tm start ={}, end ={};
 		strptime(startDate.c_str(), "%Y-%m-%d", &start);
 		strptime(endDate.c_str(), "%Y-%m-%d", &end);
 
-		std::time_t start_time = std::mktime(&start);
-		std::time_t end_time = std::mktime(&end);
+		time_t start_time = mktime(&start);
+		time_t end_time = mktime(&end);
 
-		double seconds = std::difftime(end_time, start_time);
+		double seconds = difftime(end_time, start_time);
 		return seconds/(3600*24*365.25);
 	}
 
 public:
-	Bond(const std::string& name, double fV, double c, const std::string& date1, const std::string& date2, double f) :
+	Bond(const string& name, double fV, double c, const string& date1, const string& date2, double f = 1) :
     issuer(name), faceValue(fV), coupon(c), issueDate(date1), maturityDate(date2), frequency(f) {}
 
 	double price(double discountRate) {
