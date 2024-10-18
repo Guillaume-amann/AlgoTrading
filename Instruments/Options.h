@@ -9,8 +9,8 @@ private:
     double timeToMaturity;  // Time to maturity (T) in years
     double volatility;      // Volatility (sigma) in %
     double riskFreeRate;    // Risk-free interest rate (r) in %
-    double dividendYield;   // Dividend yield (q)
-    string optionType;        // Option type ('C' for Call, 'P' for Put)
+    double dividendYield;    // Dividend yield (q)
+    char optionType;        // Option type ('C' for call, 'P' for put)
 
     // Standard normal cumulative distribution function
     double N(double x) const {
@@ -32,9 +32,9 @@ private:
     }
 
 public:
-    StockOption(double S, double K, double T, double sigma, double r, double q = 0.0, string type)
-        : stockPrice(S), strikePrice(K), timeToMaturity(T), volatility(sigma), riskFreeRate(r), dividendYield(q), optionType(type) {}
-
+    StockOption(double S, double K, double T, double sigma, double r, char type = 'C', double q = 0.0)
+        : stockPrice(S), strikePrice(K), timeToMaturity(T), volatility(sigma), riskFreeRate(r), optionType(type), dividendYield(q) {}
+ 
     double price() const {
         if (optionType == 'C') {
             return stockPrice * exp(-dividendYield * timeToMaturity) * N(d1()) - 
