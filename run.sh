@@ -9,14 +9,9 @@ INTERVAL=10
 START=$(date +%s)
 
 while [ $(($(date +%s) - START)) -lt $DURATION ]; do
-	TEMP=$(vcgencmd measure_temp)
-	echo "Current temperature: $TEMP"
 
 	./Pricer
 	echo -e "\nDone."
-
-	TEMP=$(vcgencmd measure_temp)
-	echo "Temperature after execute: $TEMP"
 
 	sleep $INTERVAL
 done

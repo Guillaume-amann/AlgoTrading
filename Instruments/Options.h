@@ -10,6 +10,7 @@ private:
     double volatility;      // Volatility (sigma) in %
     double riskFreeRate;    // Risk-free interest rate (r) in %
     double dividendYield;   // Dividend yield (q)
+    string optionType;        // Option type ('C' for Call, 'P' for Put)
 
     // Standard normal cumulative distribution function
     double N(double x) const {
@@ -31,19 +32,22 @@ private:
     }
 
 public:
-    StockOption(double S, double K, double T, double sigma, double r, double q = 0.0)
-        : stockPrice(S), strikePrice(K), timeToMaturity(T), volatility(sigma), riskFreeRate(r), dividendYield(q) {}
+    StockOption(double S, double K, double T, double sigma, double r, double q = 0.0, string type)
+        : stockPrice(S), strikePrice(K), timeToMaturity(T), volatility(sigma), riskFreeRate(r), dividendYield(q), optionType(type) {}
 
-    double callPrice() const {
-        return stockPrice * exp(-dividendYield * timeToMaturity) * N(d1()) - strikePrice * exp(-riskFreeRate * timeToMaturity) * N(d2());
+    double price() const {
+        if (optionType == 'C') {
+            return stockPrice * exp(-dividendYield * timeToMaturity) * N(d1()) - 
+                   strikePrice * exp(-riskFreeRate * timeToMaturity) * N(d2());
+        } 
+        else {
+            return strikePrice * exp(-riskFreeRate * timeToMaturity) * N(-d2()) - 
+                   stockPrice * exp(-dividendYield * timeToMaturity) * N(-d1());
+        }
     }
 
-    double putPrice() const {
-        return strikePrice * exp(-riskFreeRate * timeToMaturity) * N(-d2()) - stockPrice * exp(-dividendYield * timeToMaturity) * N(-d1());
-    }
-
-    double delta(char OpType) const {
-        if (OpType == 'C')
+    double delta() const {
+        if (optionType == 'C')
             return exp(-dividendYield * timeToMaturity) * N(d1());
         else
             return exp(-dividendYield * timeToMaturity) * (N(d1()) - 1);
@@ -57,19 +61,19 @@ public:
         return stockPrice * f(d1()) * exp(-dividendYield * timeToMaturity) * sqrt(timeToMaturity);
     }
 
-    double rho(char OpType) const {
-        if (OpType == 'C')
+    double rho() const {
+        if (optionType == 'C')
             return timeToMaturity * strikePrice * exp(-riskFreeRate * timeToMaturity) * N(d2());
         else
             return -timeToMaturity * strikePrice * exp(-riskFreeRate * timeToMaturity) * N(-d2());
     }
 
-    double theta(char OpType) const {
+    double theta() const {
         double term1 = (-stockPrice * f(d1()) * exp(-dividendYield * timeToMaturity) * volatility) / (2 * sqrt(timeToMaturity));
         double term2 = dividendYield * stockPrice * exp(-dividendYield * timeToMaturity) * N(d1());
         double term3 = riskFreeRate * strikePrice * exp(-riskFreeRate * timeToMaturity) * N(d2());
 
-        if (OpType == 'C')
+        if (optionType == 'C')
             return term1 - term2 - term3;
         else
             return term1 + term2 + riskFreeRate * strikePrice * exp(-riskFreeRate * timeToMaturity) * N(-d2());
