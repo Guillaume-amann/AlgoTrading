@@ -10,8 +10,10 @@ START=$(date +%s)
 
 while [ $(($(date +%s) - START)) -lt $DURATION ]; do
 
-	./Pricer
+	./AAPL
 	echo -e "\nDone."
+
+	rm -rf AAPL.dSYM
 
 	sleep $INTERVAL
 done
