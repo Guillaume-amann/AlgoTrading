@@ -10,7 +10,7 @@ START=$(date +%s)
 
 while [ $(($(date +%s) - START)) -lt $DURATION ]; do
 
-	./AAPL
+	echo "AAPL" | ./AAPL
 	echo -e "\nDone."
 
 	rm -rf AAPL.dSYM

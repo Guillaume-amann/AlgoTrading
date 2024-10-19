@@ -3,7 +3,6 @@
 using namespace std;
 
 int main() {
-    // Initialize the Python interpreter
     Py_Initialize();
     PyRun_SimpleString("import sys; sys.path.append('.')");
 
@@ -11,48 +10,65 @@ int main() {
     cout << "Enter stock ticker: ";
     cin >> ticker;
 
-    // Import the Python module
-    PyObject* myModuleString = PyUnicode_FromString("DataDownloader.getStockPrice");
+    PyObject* myModuleString = PyUnicode_FromString("Web.getStockPrice");
     PyObject* myModule = PyImport_Import(myModuleString);
     Py_DECREF(myModuleString);
 
-    if (!myModule) {
-        cerr << "Error: Failed to load Python module." << endl;
-        Py_Finalize();
-        return 1;
-    }
-
-    // Get the function from the module
-    PyObject* myFunction = PyObject_GetAttrString(myModule, "get_last_stock_price");
-    if (!myFunction || !PyCallable_Check(myFunction)) {
-        cerr << "Error: Function not found or not callable." << endl;
-        Py_DECREF(myModule);
-        Py_Finalize();
-        return 1;
-    }
-
-    // Prepare the argument
+    PyObject* getDataFunction = PyObject_GetAttrString(myModule, "get_last_stock_price");
     PyObject* pyTicker = PyUnicode_FromString(ticker.c_str());
     PyObject* args = PyTuple_Pack(1, pyTicker);
     Py_DECREF(pyTicker);
 
-    // Call the function
-    PyObject* myResult = PyObject_CallObject(myFunction, args);
+    PyObject* myResult = PyObject_CallObject(getDataFunction, args);
     Py_DECREF(args);
 
     if (myResult && PyFloat_Check(myResult)) {
         double result = PyFloat_AsDouble(myResult);
-        cout << "The stock price for " << ticker << " is: " << result << endl;  // Print the stock price
-    } else {
-        cerr << "Error: Unexpected return type from Python function." << endl;
+        cout << "The stock price for " << ticker << " is: " << result << endl;
+
+        if (result > 200) {
+            cout << "Stock price is greater than 250, sending email..." << endl;
+
+            PyObject* emailModuleString = PyUnicode_FromString("Web.email_sender");
+            PyObject* emailModule = PyImport_Import(emailModuleString);
+            Py_DECREF(emailModuleString);
+
+            PyObject* sendEmailFunction = PyObject_GetAttrString(emailModule, "send_email");
+
+            PyObject* pySender = PyUnicode_FromString("XXXXX"); // Replace with sender
+            PyObject* pyRecipient = PyUnicode_FromString("XXXXX"); // Replace with recipient
+            PyObject* pySubject = PyUnicode_FromString("Stock Price Alert");
+            string message = "The stock price of " + ticker + " is $" + to_string(result);
+            PyObject* pyBody = PyUnicode_FromString(message.c_str());
+            PyObject* pyPassword = PyUnicode_FromString("XXXXX");  // Replace with your app password
+
+            PyObject* emailArgs = PyTuple_Pack(5, pySender, pyRecipient, pySubject, pyBody, pyPassword);
+            Py_DECREF(pySender);
+            Py_DECREF(pyRecipient);
+            Py_DECREF(pySubject);
+            Py_DECREF(pyBody);
+            Py_DECREF(pyPassword);
+
+            PyObject* emailResult = PyObject_CallObject(sendEmailFunction, emailArgs);
+            Py_DECREF(emailArgs);
+
+            if (!emailResult) {
+                cerr << "Error: Failed to send email." << endl;
+            } else {
+                cout << "Email sent successfully!" << endl;
+            }
+
+            Py_DECREF(emailResult);
+            Py_DECREF(sendEmailFunction);
+            Py_DECREF(emailModule);
+        }
+
     }
 
-    // Clean up Python objects
     Py_XDECREF(myResult);
     Py_DECREF(myFunction);
     Py_DECREF(myModule);
 
-    // Finalize the Python interpreter
     Py_Finalize();
     return 0;
 }
