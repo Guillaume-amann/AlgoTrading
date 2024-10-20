@@ -2,8 +2,8 @@
 
 echo "------INIT------"
 
-DURATION=40
-INTERVAL=10
+DURATION=60
+INTERVAL=20
 #all in seconds
 
 START=$(date +%s)
