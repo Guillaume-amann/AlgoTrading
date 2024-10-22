@@ -74,8 +74,8 @@ int main() {
         Py_DECREF(emailModuleString);
 
         PyObject* sendEmailFunction = PyObject_GetAttrString(emailModule, "send_email");
-        PyObject* pySender = PyUnicode_FromString("amann.guill@gmail.com"); // Replace with sender
-        PyObject* pyRecipient = PyUnicode_FromString("amann.guill@gmail.com"); // Replace with recipient
+        PyObject* pySender = PyUnicode_FromString("mail@gmail.com"); // Replace with sender
+        PyObject* pyRecipient = PyUnicode_FromString("mail@gmail.com"); // Replace with recipient
         PyObject* pySubject = PyUnicode_FromString("Stock Price Alert");
         PyObject* pyBody = PyUnicode_FromString(message.c_str());
         PyObject* pyPassword = PyUnicode_FromString("");  // Replace with your app password
