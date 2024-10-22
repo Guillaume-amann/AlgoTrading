@@ -62,11 +62,12 @@ int main() {
     double histVolB = hist_vol(ytd_prices, "y", "bootstrap");
 
     string message = "The stock price of " + ticker + " is $" + to_string(stcPrice) + "\nPast year Historical Volatility: " + to_string(histVol) + " %"
-                                                                                    + "\nPast year Historical Volatility (bootstrap): " + to_string(histVolB) + " %";
+                                                                                    + "\nPast year Historical Volatility (bootstrap): " + to_string(histVolB) + " %"
+                                                                                    + "\n \n See more here: https://github.com/Guillaume-amann/AlgoTrading";
 
     //Now send an email if...
     if (stcPrice > 200) {
-        cout << "Stock price is greater than 250, sending email..." << endl;
+        cout << "Stock price is greater than 200, sending email..." << endl;
 
         PyObject* emailModuleString = PyUnicode_FromString("Web.email_sender");
         PyObject* emailModule = PyImport_Import(emailModuleString);
@@ -77,7 +78,7 @@ int main() {
         PyObject* pyRecipient = PyUnicode_FromString("amann.guill@gmail.com"); // Replace with recipient
         PyObject* pySubject = PyUnicode_FromString("Stock Price Alert");
         PyObject* pyBody = PyUnicode_FromString(message.c_str());
-        PyObject* pyPassword = PyUnicode_FromString("cizbtmoesolhbiyf");  // Replace with your app password
+        PyObject* pyPassword = PyUnicode_FromString("");  // Replace with your app password
         PyObject* emailArgs = PyTuple_Pack(5, pySender, pyRecipient, pySubject, pyBody, pyPassword);
         Py_DECREF(pySender);
         Py_DECREF(pyRecipient);

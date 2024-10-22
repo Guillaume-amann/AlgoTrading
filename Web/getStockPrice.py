@@ -1,9 +1,9 @@
 import sys
 import yfinance as yf
 
-def get_last_stock_price(stock_symbol):
+def get_last_stock_price(ticker):
     try:
-        stock = yf.Ticker(stock_symbol)
+        stock = yf.Ticker(ticker)
         hist = stock.history(period="1d")
         last_price = hist['Close'].iloc[-1]
         return last_price
@@ -11,10 +11,10 @@ def get_last_stock_price(stock_symbol):
         print(f"Error fetching stock data: {e}")
         return None
 
-def YTD(stock_symbol):
+def YTD(ticker):
     try:
-        stock = yf.Ticker(stock_symbol)
-        hist = stock.history(period="1y")  # Fetch data for the last year
+        stock = yf.Ticker(ticker)
+        hist = stock.history(period="1y")
         # Check if there are at least 252 entries
         if len(hist) >= 252:
             return list(hist['Close'].iloc[-252:])  # Return the last 252 prices
