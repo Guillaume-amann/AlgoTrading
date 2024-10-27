@@ -4,6 +4,7 @@ using namespace std;
 
 class StockOption {
 private:
+    string stockTicker;     // Ticker of the underlying
     double stockPrice;      // Current stock price (S)
     double strikePrice;     // Strike price of the option (K)
     double timeToMaturity;  // Time to maturity (T) in years
