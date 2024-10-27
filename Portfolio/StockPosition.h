@@ -78,12 +78,7 @@ public:
 
     void saveDailyPosition() const {
         ofstream outFile(filename, app);
-        outFile << ticker << "," 
-            << dateStart << "," 
-            << priceBought << "," 
-            << volume << "," 
-            << posReturn << "," 
-            << posLength << endl;
+        outFile << ticker << "," << dateStart << "," << priceBought << "," << volume << "," << posReturn << "," << posLength << endl;
         file.close();
     }
 };

@@ -3,3 +3,11 @@ make sure run.sh has the permission to be executed with:
 chmod +x runs.sh
 ```
 return to normal
+
+1. Running a single compiled C++ executable: The executable will contain all three functions combined into one program. When you run it, the operating system needs to load the entire program into 
+memory once, initialize the data structures, and then execute each function sequentially as instructed by the main function. This approach might be faster if the tasks are highly interdependent or 
+if there's minimal overhead in loading and initializing the program.
+
+2. Running multiple C++ executables: In this case, you would have separate executables for each task. The operating system loads each executable into memory, initializes data structures, and 
+executes the specified task. This approach might be slower due to the increased overhead of loading and initializing multiple programs, but it can potentially leverage the benefits of 
+parallelization if the tasks are independent or only require minimal communication between them.

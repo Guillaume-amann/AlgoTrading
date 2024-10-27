@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "------INIT------"
+echo "------------------INIT------------------"
 echo
 echo "What mission? (Stock/Bond/Option)"
 read mission
@@ -8,17 +8,17 @@ echo
 
 case "$mission" in
     "Bond")
-        ./Pricer
+        ./Instruments/bondPricer
         ;;
     "Option")
-        ./Opt
+        ./Instruments/optionPricer
         ;;
     "Stock")
-        echo "AAPL" | ./AAPL
+        ./Instruments/stockAnalysis
         ;;
     *)
         echo "Invalid option. Please choose Stock, Bond, or Option."
         ;;
 esac
 echo
-echo "------END------"
+echo "------------------END------------------"
