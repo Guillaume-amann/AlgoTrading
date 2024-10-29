@@ -1,4 +1,5 @@
 #!/bin/bash
+cd /Users/guillaume/Downloads/Perso/Informatique/C++/AlgoTrading/
 
 echo "------------------INIT------------------"
 echo
