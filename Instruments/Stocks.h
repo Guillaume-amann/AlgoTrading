@@ -1,61 +1,86 @@
 #include <iostream>
 #include <Python.h>
+#include <filesystem> 
 using namespace std;
 
 class Stock {
 private:
     string ticker;
-    vector<float> prices;
+    vector<double> prices;
+    vector<string> dates;
+    double lastPrice;
+    string lastDate;
 
 public:
-    double lastPrice;
-    Stock(const string& ticker) : ticker(ticker) {
-        fetchYTDPrices();
-        if (!prices.empty()) {
-            lastPrice = prices.back();  // Set last_price as the most recent price
-        } else {
-            cerr << "Error: No prices available for ticker " << ticker << endl;
-            lastPrice = -1;  // Indicate an error if no prices were fetched
-        }
-    }
-
-    void fetchYTDPrices() {
+    Stock(const string& stockTicker) : ticker(stockTicker), lastPrice(0.0) {
+        // Initialize Python
         Py_Initialize();
-        PyRun_SimpleString("import sys; sys.path.append('.')");
 
-        PyObject* getStockPriceString = PyUnicode_FromString("Web.getStockPrice");
-        PyObject* getStockPriceModule = PyImport_Import(getStockPriceString);
-        Py_DECREF(getStockPriceString);
+        // Set the Python path to include the Web directory
+        PyRun_SimpleString("import sys");
+        PyRun_SimpleString("sys.path.append('/Users/guillaume/Downloads/Perso/Informatique/C++/AlgoTrading/Web/')");
 
-        PyObject* ytdFunction = PyObject_GetAttrString(getStockPriceModule, "YTD");
-        PyObject* pyTicker = PyUnicode_FromString(ticker.c_str());
-        PyObject* ytdArgs = PyTuple_Pack(1, pyTicker);
-        Py_DECREF(pyTicker);
+        // Import the getStockPrice module
+        PyObject* pModule = PyImport_ImportModule("getStockPrice");
+        if (pModule != nullptr) {
+            // Get the YTD function
+            PyObject* pFunc = PyObject_GetAttrString(pModule, "YTD");
+            if (pFunc && PyCallable_Check(pFunc)) {
+                // Call the function with the ticker symbol as an argument
+                PyObject* pArgs = PyTuple_Pack(1, PyUnicode_FromString(ticker.c_str()));
+                PyObject* pValue = PyObject_CallObject(pFunc, pArgs);
 
-        PyObject* ytdResult = PyObject_CallObject(ytdFunction, ytdArgs);
-        Py_DECREF(ytdArgs);
-        Py_DECREF(ytdFunction);
-        Py_DECREF(getStockPriceModule);
+                // Check if the return value is a tuple
+                if (pValue != nullptr && PyTuple_Check(pValue)) {
+                    // Extract prices (first element) and dates (second element)
+                    PyObject* pPricesList = PyTuple_GetItem(pValue, 0);
+                    PyObject* pDatesList = PyTuple_GetItem(pValue, 1);
 
-        // Fill `prices` vector with the last 252 values
-        Py_ssize_t size = PyList_Size(ytdResult);
-        prices.clear();
-        for (Py_ssize_t i = 0; i < size; i++) {
-            PyObject* item = PyList_GetItem(ytdResult, i);
-            if (PyFloat_Check(item)) {
-                prices.push_back(PyFloat_AsDouble(item));
+                    if (PyList_Check(pPricesList) && PyList_Check(pDatesList)) {
+                        Py_ssize_t size = PyList_Size(pPricesList);
+                        prices.reserve(size);
+                        dates.reserve(size);
+
+                        for (Py_ssize_t i = 0; i < size; ++i) {
+                            // Extract price
+                            PyObject* pPrice = PyList_GetItem(pPricesList, i);
+                            prices.push_back(PyFloat_AsDouble(pPrice));
+
+                            // Extract date
+                            PyObject* pDate = PyList_GetItem(pDatesList, i);
+                            dates.push_back(PyUnicode_AsUTF8(pDate));
+                        }
+                        
+                        // Set lastPrice to the last element in prices if available
+                        if (!prices.empty()) {
+                            lastPrice = prices.back();
+                            lastDate = dates.back();
+                        }
+                    } else {
+                        PyErr_Print();
+                    }
+                } else {
+                    PyErr_Print();
+                }
+
+                // Clean up
+                Py_XDECREF(pValue);
+                Py_XDECREF(pArgs);
+                Py_XDECREF(pFunc);
+            } else {
+                PyErr_Print();
             }
+            Py_XDECREF(pModule);
+        } else {
+            PyErr_Print();
         }
 
-        Py_DECREF(ytdResult);
         Py_Finalize();
     }
 
-    double getLastPrice() const {
-        return lastPrice;
-    }
-
-    const vector<float>& getPriceHistory() const {
-        return prices;
-    }
+    string getTicker() { return ticker; };
+    vector<double> getPrices() { return prices; };
+    vector<string> getDates() { return dates; };
+    double getLastPrice() { return lastPrice; };
+    string getLastDate() { return lastDate; };
 };

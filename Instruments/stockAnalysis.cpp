@@ -1,14 +1,12 @@
 #include <iostream>
-#include <vector>
-#include "../Regressors/Volatility.h"
 #include "Stocks.h"
 using namespace std;
 
 int main() {
     Stock myStock("AAPL");
-    double stcPrice = myStock.lastPrice;
 
-	cout << "Stock Price: $" << stcPrice << endl;
+	cout << "Stock Price: $" << myStock.getLastPrice() << endl;
+	cout << "As of " << myStock.getLastDate() << endl;
 		
 	return 0;
 }

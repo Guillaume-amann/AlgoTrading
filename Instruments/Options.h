@@ -33,6 +33,8 @@ private:
     }
 
 public:
+
+    
     StockOption(double S, double K, double T, double sigma, double r, char type = 'C', double q = 0.0)
         : stockPrice(S), strikePrice(K), timeToMaturity(T), volatility(sigma), riskFreeRate(r), optionType(type), dividendYield(q) {}
  
@@ -79,4 +81,13 @@ public:
         else
             return term1 + term2 + riskFreeRate * strikePrice * exp(-riskFreeRate * timeToMaturity) * N(-d2());
     }
+
+    string getStockTicker() { return stockTicker; };     
+    double getStockPrice() { return stockPrice; };
+    double getStrikePrice() { return strikePrice; };
+    double getTimeToMaturity() { return timeToMaturity; };
+    double getVolatility() { return volatility; };
+    double getRiskFreeRate() { return riskFreeRate; };
+    double getDividendYield() { return dividendYield; };
+    char getOptionType() { return optionType; };
 };

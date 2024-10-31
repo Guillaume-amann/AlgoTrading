@@ -11,7 +11,10 @@ private:
 	string issueDate;		//Date of Issue "YYYY-MM-DD"
 	string maturityDate;	//Date of maturity "YYYY-MM-DD"
 	double frequency;		//Payment frequency (0.5: every 2y, 1: annually, 2: semi-annually, ...)
-	
+	double bondYield;       //Yield to maturity
+    double bondDuration;    //Duration of the bond
+    double bondConvexity;   //Convexity of the bond
+
 	double maturity(const string& startDate, const string& endDate) {
 		struct tm start ={}, end ={};
 		strptime(startDate.c_str(), "%Y-%m-%d", &start);
@@ -31,10 +34,6 @@ private:
     }
 
 public:
-	double bondYield;       //Yield to maturity
-    double bondDuration;    //Duration of the bond
-    double bondConvexity;   //Convexity of the bond
-
 	Bond(const string& name, double fV, double c, const string& date1, const string& date2, double f = 1, double marketPrice = 0) :
     issuer(name), faceValue(fV), coupon(c), issueDate(date1), maturityDate(date2), frequency(f) {
 		if (marketPrice > 0) {
@@ -92,4 +91,14 @@ public:
         convexity += (faceValue / pow(1 + discountRate / frequency, nbrPayments)) * (nbrPayments * (nbrPayments + 1));
         return convexity / (price(discountRate) * pow((1 + discountRate / frequency), 2));
     }
+
+    string getIssuer() { return issuer; }
+    double getFaceValue() { return faceValue; }
+    double getCoupon() { return coupon; }
+    string getIssueDate() { return issueDate; }
+    string getMaturityDate() { return maturityDate; }
+    double getFrequency() { return frequency; }
+    double getBondYield() { return bondYield; }
+    double getBondDuration() { return bondDuration; }
+    double getBondConvexity() { return bondConvexity; }
 };
