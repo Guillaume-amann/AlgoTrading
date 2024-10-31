@@ -17,6 +17,14 @@ case "$mission" in
     "Stock")
         ./Instruments/stockAnalysis
         ;;
+    "Position")
+        csv_file="Portfolio/Positions.csv"
+
+        # Loop through each line in the CSV file
+        while IFS=',' read -r first_item _; do
+            ./PortfolioManager "$first_item"
+        done < "$csv_file"
+        ;;
     *)
         echo "Invalid option. Please choose Stock, Bond, or Option."
         ;;

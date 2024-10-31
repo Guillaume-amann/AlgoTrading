@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <cmath>
-#include "Instruments/Stocks.h"
+#include "../Instruments/Stocks.h"
 using namespace std;
 
 class Position {
@@ -13,8 +13,7 @@ private:
     float posReturn;
     float posLength;
 
-    const string filename = "Positions.csv";
-
+    const string filename = "/Users/guillaume/Downloads/Perso/Informatique/C++/AlgoTrading/Portfolio/Positions.csv";
     bool tickerExistsInFile(string tickerToCheck, string filename) {
         ifstream file(filename);
 
@@ -22,7 +21,7 @@ private:
         size_t matchIndex = 0;
 
         if (!file.is_open()) {
-            cerr << "Error: Could not open the file " << filename << std::endl;
+            cerr << "EEHEHEHEHEH: Could not open the file " << filename << std::endl;
             return false;
         }
 
@@ -51,22 +50,19 @@ private:
 
     // Private method for buying
     void buy() {
-        if (rsi >= 1.1 && Dmacd) {
-            cout << "Selling " << ticker << "..." << endl;
-        }
-        cout << "Buying " << ticker << "..." << endl;
-        // Add specific logic for buying a position here
+        cout << "BUY" << ticker << "..." << endl;
     }
 
     // Private method for selling
     void sell() {
-        if (pow(posReturn, 1.0 / posLength) >= 1.1) {
-            cout << "Selling " << ticker << "..." << endl;
-        }
+        cout << "SELL" << ticker << "..." << endl;
+        // if (pow(posReturn, 1.0 / posLength) >= 1.1) {
+        //     cout << "Selling " << ticker << "..." << endl;
+        // }
     }
 
 public:
-    Positionconst (Asset &asset): ticker(asset.ticker), priceBought(0), volume(0), posReturn(0), posLength(0) {
+    Position (string &ticker): ticker(ticker), priceBought(0), volume(0), posReturn(0), posLength(0) {
         if (tickerExistsInFile(ticker, filename)) {
             sell();
             saveDailyPosition();
@@ -77,8 +73,15 @@ public:
     }
 
     void saveDailyPosition() const {
-        ofstream outFile(filename, app);
-        outFile << ticker << "," << dateStart << "," << priceBought << "," << volume << "," << posReturn << "," << posLength << endl;
-        file.close();
+        ofstream outFile(filename, ios::app);
+        outFile << ticker << "," << dateStart << "," << priceBought << "," << volume << "," << posReturn << "," << posLength << '\n';;
+        outFile.close();
     }
+
+    string getTicker() { return ticker; };
+    string getDateStart() { return dateStart; };
+    float getPriceBought() { return priceBought; };
+    int getVolume() { return volume; };
+    float getPosReturn() { return posReturn; };
+    float getPosLength() { return posLength; };
 };
