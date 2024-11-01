@@ -4,7 +4,17 @@
 #include <random>
 using namespace std;
 
-double ISL_bootstrap(const vector<double>& data, int num_samples) {
+vector<double> LogReturns(const vector<double>& prices) {
+    vector<double> returns;
+    for (size_t i = 1; i < prices.size(); ++i) {
+        // Log return calculation: ln(S_t / S_{t-1})
+        double logReturn = log(prices[i] / prices[i - 1]);
+        returns.push_back(logReturn);
+    }
+    return returns;
+}
+
+double ISL_bootstrap(const vector<double>& data, int num_samples = 10000) {
     int n = data.size();
     double mean = accumulate(data.begin(), data.end(), 0.0) / n;
 
@@ -27,7 +37,7 @@ double ISL_bootstrap(const vector<double>& data, int num_samples) {
     return sqrt(variance);
 }
 
-double analytical(const vector<double>& data) {
+double realisedVol(const vector<double>& data) {
     int n = data.size();
     double mean = accumulate(data.begin(), data.end(), 0.0) / n;
     double sum_squared_error = accumulate(data.begin(), data.end(), 0.0, [mean](double acc, double value) 
@@ -35,11 +45,11 @@ double analytical(const vector<double>& data) {
     return sqrt(sum_squared_error / (n - 1));
 }
 
-double hist_vol(const vector<double>& priceHistory, const string& TimePeriod, const string& method = "analytical") {
+double hist_vol(const vector<double>& priceHistory, const string& TimePeriod, const string& method = "realised") {
     if (TimePeriod == "y" && priceHistory.size() == 252) {
-        return (method == "bootstrap") ? ISL_bootstrap(priceHistory, 10000) : analytical(priceHistory);
+        return (method == "bootstrap") ? ISL_bootstrap(priceHistory, 10000) : realisedVol(priceHistory);
     } else if (TimePeriod == "m" && priceHistory.size() == 21) {
-        return (method == "bootstrap") ? ISL_bootstrap(priceHistory, 10000) : analytical(priceHistory);
+        return (method == "bootstrap") ? ISL_bootstrap(priceHistory, 10000) : realisedVol(priceHistory);
     } else {
         cerr << "Error: Invalid vector size or TimePeriod. Expected TimePeriod 'y' with size 252, or 'm' with size 21.\n";
         return -1.0;

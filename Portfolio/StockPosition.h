@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <cmath>
+#include <ctime>
 #include "../Instruments/Stocks.h"
 using namespace std;
 
@@ -19,11 +21,6 @@ private:
 
         size_t tickerLength = tickerToCheck.size();
         size_t matchIndex = 0;
-
-        if (!file.is_open()) {
-            cerr << "EEHEHEHEHEH: Could not open the file " << filename << std::endl;
-            return false;
-        }
 
         char ch;
         while (file.get(ch)) {
@@ -62,14 +59,23 @@ private:
     }
 
 public:
-    Position (string &ticker): ticker(ticker), priceBought(0), volume(0), posReturn(0), posLength(0) {
+    Position (const string &ticker): ticker(ticker), priceBought(0), volume(0), posReturn(0), posLength(0) {
+
+        time_t now = time(0);
+        tm *ltm = localtime(&now);
+        stringstream dateStream;
+        dateStream << ltm->tm_mday << "/"
+                   << 1 + ltm->tm_mon << "/" 
+                   << 1900 + ltm->tm_year;
+                   
+        dateStart = dateStream.str();
+
         if (tickerExistsInFile(ticker, filename)) {
             sell();
-            saveDailyPosition();
         } else {
             buy();
-            saveDailyPosition();
         }
+        saveDailyPosition();
     }
 
     void saveDailyPosition() const {

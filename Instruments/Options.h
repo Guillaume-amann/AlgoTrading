@@ -33,8 +33,6 @@ private:
     }
 
 public:
-
-    
     StockOption(double S, double K, double T, double sigma, double r, char type = 'C', double q = 0.0)
         : stockPrice(S), strikePrice(K), timeToMaturity(T), volatility(sigma), riskFreeRate(r), optionType(type), dividendYield(q) {}
  
