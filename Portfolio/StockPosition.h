@@ -15,7 +15,7 @@ private:
     float posReturn;
     float posLength;
 
-    const string filename = "/Users/guillaume/Downloads/Perso/Informatique/C++/AlgoTrading/Portfolio/Positions.csv";
+    const string filename = "/Users/guillaume/your/path/to/Portfolio/Positions.csv";
     bool tickerExistsInFile(string tickerToCheck, string filename) {
         ifstream file(filename);
 
