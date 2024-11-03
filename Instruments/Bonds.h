@@ -9,11 +9,11 @@ private:
 	double faceValue;		//Face value or principal issued
 	double coupon;			//Coupon rate in %
 	string issueDate;		//Date of Issue "YYYY-MM-DD"
-	string maturityDate;	//Date of maturity "YYYY-MM-DD"
+	string maturityDate;		//Date of maturity "YYYY-MM-DD"
 	double frequency;		//Payment frequency (0.5: every 2y, 1: annually, 2: semi-annually, ...)
-	double bondYield;       //Yield to maturity
-    double bondDuration;    //Duration of the bond
-    double bondConvexity;   //Convexity of the bond
+	double bondYield;       	//Yield to maturity
+    	double bondDuration;    	//Duration of the bond
+    	double bondConvexity;   	//Convexity of the bond
 
 	double maturity(const string& startDate, const string& endDate) {
 		struct tm start ={}, end ={};
@@ -34,15 +34,14 @@ private:
     }
 
 public:
-	Bond(const string& name, double fV, double c, const string& date1, const string& date2, double f = 1, double marketPrice = 0) :
-    issuer(name), faceValue(fV), coupon(c), issueDate(date1), maturityDate(date2), frequency(f) {
+	Bond(const string& name, double fV, double c, const string& date1, const string& date2, double f = 1, double marketPrice = 0) : issuer(name), faceValue(fV), coupon(c), issueDate(date1), maturityDate(date2), frequency(f) {
 		if (marketPrice > 0) {
-            calculateValues(marketPrice);
-        } else {
-            bondYield = 0;
-            bondDuration = 0;
-            bondConvexity = 0;
-        }
+			calculateValues(marketPrice);
+        	} else {
+			bondYield = 0;
+			bondDuration = 0;
+			bondConvexity = 0;
+        	}
 	}
 
 	double price(double discountRate) {
@@ -59,46 +58,46 @@ public:
 		return price;
 	}
 
-    double yield(double marketPrice) {
-        double couponPayment = (coupon * faceValue) / frequency;
-        double years = maturity(maturityDate, issueDate);
-        return (couponPayment + (faceValue - marketPrice) / years) / ((faceValue + marketPrice) / 2);
-    }
+	double yield(double marketPrice) {
+        	double couponPayment = (coupon * faceValue) / frequency;
+        	double years = maturity(maturityDate, issueDate);
+        	return (couponPayment + (faceValue - marketPrice) / years) / ((faceValue + marketPrice) / 2);
+    	}
 
 	double duration(double discountRate) {
-        double couponPayment = (coupon * faceValue) / frequency;
-        double years = maturity(maturityDate, issueDate);
-        int nbrPayments = static_cast<int>(years * frequency);
+        	double couponPayment = (coupon * faceValue) / frequency;
+        	double years = maturity(maturityDate, issueDate);
+        	int nbrPayments = static_cast<int>(years * frequency);
 
-        double duration = 0.0;
-        for (int i = 1; i <= nbrPayments; ++i) {
-            double presentValue = couponPayment / pow(1 + discountRate / frequency, i);
-            duration += (i / frequency) * presentValue;
-        }
-        duration += (faceValue / pow(1 + discountRate / frequency, nbrPayments)) * (nbrPayments / frequency);
-        return duration / (price(discountRate)); // Macaulay Duration
-    }
+        	double duration = 0.0;
+        	for (int i = 1; i <= nbrPayments; ++i) {
+            		double presentValue = couponPayment / pow(1 + discountRate / frequency, i);
+            		duration += (i / frequency) * presentValue;
+        	}
+        	duration += (faceValue / pow(1 + discountRate / frequency, nbrPayments)) * (nbrPayments / frequency);
+        	return duration / (price(discountRate)); // Macaulay Duration
+    	}
 
-    double convexity(double discountRate) {
-        double couponPayment = (coupon * faceValue) / frequency;
-        double years = maturity(maturityDate, issueDate);
-        int nbrPayments = static_cast<int>(years * frequency);
+    	double convexity(double discountRate) {
+        	double couponPayment = (coupon * faceValue) / frequency;
+        	double years = maturity(maturityDate, issueDate);
+        	int nbrPayments = static_cast<int>(years * frequency);
 
-        double convexity = 0.0;
-        for (int i = 1; i <= nbrPayments; ++i) {
-            convexity += (couponPayment / pow(1 + discountRate / frequency, i)) * (i * (i + 1));
-        }
-        convexity += (faceValue / pow(1 + discountRate / frequency, nbrPayments)) * (nbrPayments * (nbrPayments + 1));
-        return convexity / (price(discountRate) * pow((1 + discountRate / frequency), 2));
-    }
+        	double convexity = 0.0;
+        	for (int i = 1; i <= nbrPayments; ++i) {
+            		convexity += (couponPayment / pow(1 + discountRate / frequency, i)) * (i * (i + 1));
+        	}
+        	convexity += (faceValue / pow(1 + discountRate / frequency, nbrPayments)) * (nbrPayments * (nbrPayments + 1));
+        	return convexity / (price(discountRate) * pow((1 + discountRate / frequency), 2));
+    	}
 
-    string getIssuer() { return issuer; }
-    double getFaceValue() { return faceValue; }
-    double getCoupon() { return coupon; }
-    string getIssueDate() { return issueDate; }
-    string getMaturityDate() { return maturityDate; }
-    double getFrequency() { return frequency; }
-    double getBondYield() { return bondYield; }
-    double getBondDuration() { return bondDuration; }
-    double getBondConvexity() { return bondConvexity; }
+    	string getIssuer() { return issuer; }
+    	double getFaceValue() { return faceValue; }
+   	double getCoupon() { return coupon; }
+    	string getIssueDate() { return issueDate; }
+    	string getMaturityDate() { return maturityDate; }
+    	double getFrequency() { return frequency; }
+    	double getBondYield() { return bondYield; }
+    	double getBondDuration() { return bondDuration; }
+    	double getBondConvexity() { return bondConvexity; }
 };
