@@ -8,7 +8,7 @@ int main() {
 
 	cout << "Stock Price: $" << myStock.getLastPrice() << endl;
 	cout << "As of " << myStock.getLastDate() << endl;
-	cout << "RSI (14)" << myStock.getRSI() << endl;
+	cout << "RSI(14): " << myStock.getRSI() << endl;
 
 	vector<double> ret = LogReturns(myStock.getPrices());
 	double vol1 = realisedVol(ret)*100;

@@ -8,80 +8,87 @@ using namespace std;
 
 class Position {
 private:
-    string ticker;
-    string dateStart;
-    float priceBought;
-    int volume;
-    float posReturn;
-    float posLength;
+    string ticker;     //ticker of the Cie
+    string dateStart;  //Date of first stock purchase
+    float priceBought; //Average price per stock bought
+    int volume;      //Amount of stocks held
+    float posReturn; //Position absolute return as a pctg of price bought premium
+    float posLength; //Position duration as a fraction of a 252-day year
 
-    const string filename = "/Users/guillaume/your/path/to/Portfolio/Positions.csv";
-    bool tickerExistsInFile(string tickerToCheck, string filename) {
+    const string filename = "/Users/guillaume/Downloads/Perso/Informatique/C++/AlgoTrading/Portfolio/Positions.csv";
+
+public:
+    Position (const string &ticker, int lineNumber): ticker(ticker) {
         ifstream file(filename);
+        if (!file.is_open()) {
+            cerr << "Error opening file: " << filename << endl;
+            return;
+        }
 
-        size_t tickerLength = tickerToCheck.size();
-        size_t matchIndex = 0;
-
-        char ch;
-        while (file.get(ch)) {
-            if (ch == tickerToCheck[matchIndex]) {
-                matchIndex++;
-                //Check if the entire ticker has been matched
-                if (matchIndex == tickerLength) {
-                    char nextChar = file.peek();
-                    if (nextChar == ',' || nextChar == '\n' || nextChar == EOF) {
-                        file.close();
-                        return true;
-                    } else {
-                        matchIndex = 0; //Reset match index if followed by other characters
-                    }
-                }
-            } else {
-                matchIndex = (ch == tickerToCheck[0]) ? 1 : 0;
+        string line;
+        // Skip lines until reaching the specified line number
+        for (int currentLine = 0; currentLine < lineNumber; ++currentLine) {
+            if (!getline(file, line)) {
+                cerr << "Error: line number " << lineNumber << " exceeds file length." << endl;
+                return;
             }
         }
 
-        file.close();
-        return false;
-    }
+        // Now we are at the specified line, parse it
+        if (getline(file, line)) {
+            istringstream ss(line);
+            string field;
 
-    // Private method for buying
-    void buy() {
-        cout << "BUY" << ticker << "..." << endl;
-    }
+            // Parse the line (assuming CSV format: ticker,dateStart,priceBought,volume,posReturn,posLength)
+            getline(ss, this->ticker, ',');  // Re-assign to confirm ticker
+            getline(ss, dateStart, ',');
+            getline(ss, field, ',');
+            priceBought = stof(field);
 
-    // Private method for selling
-    void sell() {
-        cout << "SELL" << ticker << "..." << endl;
-        // if (pow(posReturn, 1.0 / posLength) >= 1.1) {
-        //     cout << "Selling " << ticker << "..." << endl;
-        // }
-    }
+            getline(ss, field, ',');
+            volume = stoi(field);
 
-public:
-    Position (const string &ticker): ticker(ticker), priceBought(0), volume(0), posReturn(0), posLength(0) {
+            getline(ss, field, ',');
+            posReturn = stof(field);
 
-        time_t now = time(0);
-        tm *ltm = localtime(&now);
-        stringstream dateStream;
-        dateStream << ltm->tm_mday << "/"
-                   << 1 + ltm->tm_mon << "/" 
-                   << 1900 + ltm->tm_year;
-                   
-        dateStart = dateStream.str();
+            getline(ss, field, ',');
+            posLength = stof(field);
 
-        if (tickerExistsInFile(ticker, filename)) {
-            sell();
         } else {
-            buy();
+            cerr << "Error: Could not read line number " << lineNumber << endl;
         }
-        saveDailyPosition();
+
+        file.close();
+
+        Stock myStock(ticker);
+
+        int positionStatus = checkPosition(myStock);
+        if (positionStatus == 1) {
+            cout << "BUY" << endl;
+        } 
+        else if (positionStatus == 0) {
+            cout << "HOLD" << endl;
+        } 
+        else if (positionStatus == -1) {
+            cout << "SELL" << endl;
+        } 
+        else {
+            cout << "Error: position should be {-1, 0, 1}" << endl;
+        }
     }
 
-    void saveDailyPosition() const {
-        ofstream outFile(filename, ios::app);
-        outFile << ticker << "," << dateStart << "," << priceBought << "," << volume << "," << posReturn << "," << posLength << '\n';;
-        outFile.close();
+    int checkPosition(Stock myStock){
+        double posLength = (stod(myStock.getLastDate()) - stod(dateStart)) / 252;  // Converting dates to numbers (assuming yyyyMMdd format)
+        double posReturn = pow((1+((myStock.getLastPrice() - priceBought)/priceBought)) , (1/posLength));
+        if (posReturn > 1.1) {
+            return -1;  // SELL
+        }
+        else if (posReturn < 0.0) {
+            return 1;   // BUY
+        }
+        else {
+            return 0;   // HOLD
+        }
     }
 
     string getTicker() { return ticker; };
