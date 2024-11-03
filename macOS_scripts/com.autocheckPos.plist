@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+
+<dict>
+    <key>Label</key>
+    <string>com.autocheckPos</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/guillaume/checkPositions.sh</string>
+    </array>
+    <key>StartInterval</key>
+    <integer>36000</integer> <!-- Executes every 10 hours (36000 seconds) -->
+    <!-- <key>StandardOutPath</key>
+    <string>/Users/guillaume/Documents/out.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/guillaume/Documents/error.log</string> -->
+</dict>
+
+</plist>

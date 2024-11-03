@@ -4,7 +4,7 @@
 
 <dict>
     <key>Label</key>
-    <string>com.script</string>
+    <string>com.morningMail</string>
     <key>ProgramArguments</key>
     <array>
         <string>/Users/username/auto.sh</string>

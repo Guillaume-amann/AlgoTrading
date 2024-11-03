@@ -1,7 +1,7 @@
 #!/bin/bash
 export PATH=$PATH:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
 
-cd /Users/guillaume/Downloads/Perso/Informatique/C++/AlgoTrading/
+cd /Users/username/path/to/your/local/clone/
 
 echo "------------------INIT------------------"
 echo
@@ -15,7 +15,7 @@ wait $pid1
 wait $pid2
 
 # Send email with combined output
-osascript -e "do shell script \"echo '$output1\n\n$output2\n\nSee more here: https://github.com/Guillaume-amann/AlgoTrading' | mail -s 'Stock Alert' amann.guill@gmail.com\""
+osascript -e "do shell script \"echo '$output1\n\n$output2\n\nSee more here: https://github.com/Guillaume-amann/AlgoTrading' | mail -s 'Stock Alert' your.address@mail.com\""
 echo "Email sent."
 echo
 echo

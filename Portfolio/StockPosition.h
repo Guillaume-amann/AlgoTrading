@@ -20,12 +20,8 @@ private:
 public:
     Position (const string &ticker, int lineNumber): ticker(ticker) {
         ifstream file(filename);
-        if (!file.is_open()) {
-            cerr << "Error opening file: " << filename << endl;
-            return;
-        }
-
         string line;
+        
         // Skip lines until reaching the specified line number
         for (int currentLine = 0; currentLine < lineNumber; ++currentLine) {
             if (!getline(file, line)) {
@@ -39,23 +35,16 @@ public:
             istringstream ss(line);
             string field;
 
-            // Parse the line (assuming CSV format: ticker,dateStart,priceBought,volume,posReturn,posLength)
             getline(ss, this->ticker, ',');  // Re-assign to confirm ticker
             getline(ss, dateStart, ',');
             getline(ss, field, ',');
             priceBought = stof(field);
-
             getline(ss, field, ',');
             volume = stoi(field);
-
             getline(ss, field, ',');
             posReturn = stof(field);
-
             getline(ss, field, ',');
             posLength = stof(field);
-
-        } else {
-            cerr << "Error: Could not read line number " << lineNumber << endl;
         }
 
         file.close();
@@ -64,13 +53,12 @@ public:
 
         int positionStatus = checkPosition(myStock);
         if (positionStatus == 1) {
-            cout << "BUY" << endl;
+            cout << "BUY " << ticker << endl;
         } 
         else if (positionStatus == 0) {
-            cout << "HOLD" << endl;
         } 
         else if (positionStatus == -1) {
-            cout << "SELL" << endl;
+            cout << "SELL " << ticker << " | @ " << posReturn << " annual return"<< endl;
         } 
         else {
             cout << "Error: position should be {-1, 0, 1}" << endl;
