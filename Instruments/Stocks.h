@@ -63,7 +63,7 @@ public:
 
         // Set the Python path to include the Web directory
         PyRun_SimpleString("import sys");
-        PyRun_SimpleString("sys.path.append('/Users/guillaume/your/path/to/Web/')");
+        PyRun_SimpleString("sys.path.append('/Users/guillaume/Downloads/Perso/Informatique/C++/AlgoTrading/Web')");
 
         // Import the getStockPrice module
         PyObject* pModule = PyImport_ImportModule("getStockPrice");

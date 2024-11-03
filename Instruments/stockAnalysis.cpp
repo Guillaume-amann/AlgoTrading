@@ -11,10 +11,11 @@ int main() {
 	cout << "RSI (14)" << myStock.getRSI() << endl;
 
 	vector<double> ret = LogReturns(myStock.getPrices());
-	double vol1 = realisedVol(ret);
-	double vol2 = ISL_bootstrap(ret);
+	double vol1 = realisedVol(ret)*100;
+	double vol2 = bootstrapStandardDeviation(ret)*100;
 
-	cout << vol1 << "     " << vol2;
+	cout << "Realised Volatility: "<< vol1 << "%" << endl;
+	cout << "Bootstrapped Volatility: " << vol2 << "%" << endl;
 
 	return 0;
 }

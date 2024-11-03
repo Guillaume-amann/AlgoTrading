@@ -1,6 +1,5 @@
 #include <iostream>
-#include <vector>
-#include <cmath>
+#include <numeric>
 #include <random>
 using namespace std;
 
@@ -14,44 +13,47 @@ vector<double> LogReturns(const vector<double>& prices) {
     return returns;
 }
 
-double ISL_bootstrap(const vector<double>& data, int num_samples = 10000) {
-    int n = data.size();
-    double mean = accumulate(data.begin(), data.end(), 0.0) / n;
-
-    vector<double> bootstrap_means(num_samples);
-    random_device rd;
-    mt19937 gen(rd());
-    uniform_int_distribution<> dist(0, n - 1);
-
-    for (int i = 0; i < num_samples; ++i) {
-        double sample_mean = 0.0;
-        for (int j = 0; j < n; ++j) {
-            sample_mean += data[dist(gen)];
-        }
-        bootstrap_means[i] = sample_mean / n;
-    }
-
-    double bootstrap_mean = accumulate(bootstrap_means.begin(), bootstrap_means.end(), 0.0) / num_samples;
-    double variance = accumulate(bootstrap_means.begin(), bootstrap_means.end(), 0.0, [bootstrap_mean](double acc, double bm) 
-                        {return acc + (bm - bootstrap_mean) * (bm - bootstrap_mean);}) / (num_samples - 1);
-    return sqrt(variance);
-}
-
-double realisedVol(const vector<double>& data) {
+double realisedVol(const vector<double>& data, const string& type = "population") {
     int n = data.size();
     double mean = accumulate(data.begin(), data.end(), 0.0) / n;
     double sum_squared_error = accumulate(data.begin(), data.end(), 0.0, [mean](double acc, double value) 
                         {return acc + (value - mean) * (value - mean);});
-    return sqrt(sum_squared_error / (n - 1));
+    if (type != "population") {
+        return sqrt(sum_squared_error / (n - 1));  // Sample standard deviation
+    } else {
+        return sqrt(sum_squared_error / n);  // Default to Population standard deviation
+    }
 }
 
-double hist_vol(const vector<double>& priceHistory, const string& TimePeriod, const string& method = "realised") {
-    if (TimePeriod == "y" && priceHistory.size() == 252) {
-        return (method == "bootstrap") ? ISL_bootstrap(priceHistory, 10000) : realisedVol(priceHistory);
-    } else if (TimePeriod == "m" && priceHistory.size() == 21) {
-        return (method == "bootstrap") ? ISL_bootstrap(priceHistory, 10000) : realisedVol(priceHistory);
-    } else {
-        cerr << "Error: Invalid vector size or TimePeriod. Expected TimePeriod 'y' with size 252, or 'm' with size 21.\n";
-        return -1.0;
+// Function to generate a bootstrap sample from the original data
+vector<double> generateBootstrapSample(const vector<double>& data) {
+    int n = data.size();
+    double mean = accumulate(data.begin(), data.end(), 0.0) / n;
+    double stdDev = realisedVol(data);  // Use realized volatility as the standard deviation
+
+    std::vector<double> sample;
+    sample.reserve(n);
+
+    random_device rd;
+    mt19937 gen(rd());
+    normal_distribution<> normal_dist(mean, stdDev);
+
+    // Generate normally distributed samples
+    for (size_t i = 0; i < n; ++i) {
+        sample.push_back(normal_dist(gen));
     }
+
+    return sample;
+}
+
+// Function to calculate the bootstrapped standard deviation
+double bootstrapStandardDeviation(const vector<double>& data, int numSamples=10000) {
+    vector<double> bootstrappedStdDevs;
+    for (int i = 0; i < numSamples; ++i) {
+        vector<double> sample = generateBootstrapSample(data);
+        double stdDev = realisedVol(sample);
+        bootstrappedStdDevs.push_back(stdDev);
+    }
+    double mean = std::accumulate(bootstrappedStdDevs.begin(), bootstrappedStdDevs.end(), 0.0) / bootstrappedStdDevs.size();
+    return mean;
 }
