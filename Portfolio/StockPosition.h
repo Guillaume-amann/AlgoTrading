@@ -17,8 +17,10 @@ private:
 
     const string filename = "/Users/guillaume/Downloads/Perso/Informatique/C++/AlgoTrading/Portfolio/Positions.csv";
 
+    Stock myStock;     // Stock object to check position
+
 public:
-    Position (const string &ticker, int lineNumber): ticker(ticker) {
+    Position (const string &ticker, int lineNumber): ticker(ticker), myStock(ticker) {
         ifstream file(filename);
         string line;
         
@@ -46,32 +48,18 @@ public:
             getline(ss, field, ',');
             posLength = stof(field);
         }
-
         file.close();
-
-        Stock myStock(ticker);
-
-        int positionStatus = checkPosition(myStock);
-        if (positionStatus == 1) {
-            cout << "BUY " << ticker << endl;
-        } 
-        else if (positionStatus == 0) {
-        } 
-        else if (positionStatus == -1) {
-            cout << "SELL " << ticker << " | @ " << posReturn << " annual return"<< endl;
-        } 
-        else {
-            cout << "Error: position should be {-1, 0, 1}" << endl;
-        }
     }
 
-    int checkPosition(Stock myStock){
+    int checkPosition() {
         double posLength = (stod(myStock.getLastDate()) - stod(dateStart)) / 252;  // Converting dates to numbers (assuming yyyyMMdd format)
         double posReturn = pow((1+((myStock.getLastPrice() - priceBought)/priceBought)) , (1/posLength));
         if (posReturn > 1.1) {
+            cout << "SELL " << ticker << " | @ " << (posReturn-1)*100 << " annual return"<< endl;
             return -1;  // SELL
         }
         else if (posReturn < 0.0) {
+            cout << "BUY " << ticker << endl;
             return 1;   // BUY
         }
         else {

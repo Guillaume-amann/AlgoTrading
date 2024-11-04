@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Portfolio/StockPosition.h"
+#include "StockPosition.h"
 using namespace std;
 
 int main(int argc, char* argv[]) {
@@ -13,6 +13,8 @@ int main(int argc, char* argv[]) {
     int line = stoi(argv[2]); // The second argument is the line number
 
     Position myPosition(ticker, line); // Create Position object with the arguments
+
+    int position = myPosition.checkPosition();
 
     return 0;
 }

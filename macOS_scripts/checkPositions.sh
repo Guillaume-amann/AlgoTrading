@@ -17,7 +17,7 @@ SECONDS=0
         index=$(awk -F, -v ticker="$ticker" '$1 == ticker {print NR; exit}' "$csv_file")
         #echo "Processing ticker: $ticker at line $index"
 
-        ./checkPos "$ticker" "$index" &
+        ./Portfolio/checkPos "$ticker" "$index" &
 
         # Check if we've reached the maximum number of jobs
         ((current_jobs++))
@@ -31,5 +31,5 @@ SECONDS=0
 
 wait
 echo "Total execution time: $SECONDS seconds"
-rm Portfolio/Positions.csv
-mv Portfolio/copyPositions.csv Portfolio/Positions.csv
+# rm Portfolio/Positions.csv
+# mv Portfolio/copyPositions.csv Portfolio/Positions.csv
