@@ -1,16 +1,48 @@
-make sure run.sh has the permission to be executed with:
-```bash
-chmod +x runs.sh
-```
-return to normal
+# Financial Library for Position Management and Analysis
 
-1. Running a single compiled C++ executable: The executable will contain all three functions combined into one program. When you run it, the operating system needs to load the entire program into 
-memory once, initialize the data structures, and then execute each function sequentially as instructed by the main function. This approach might be faster if the tasks are highly interdependent or 
-if there's minimal overhead in loading and initializing the program.
+This C++ project provides a financial library designed for managing and analysing financial positions, specifically focused on bonds, derivatives, and other financial instruments. The library includes a `Position` class to manage and track position attributes, calculate returns, and monitor portfolio performance.
 
-2. Running multiple C++ executables: In this case, you would have separate executables for each task. The operating system loads each executable into memory, initializes data structures, and 
-executes the specified task. This approach might be slower due to the increased overhead of loading and initializing multiple programs, but it can potentially leverage the benefits of 
-parallelization if the tasks are independent or only require minimal communication between them.
+## Features
+
+- **Position Management**:
+  - Track essential attributes like ticker, price bought, volume, and returns for each position.
+  - Automatically logs daily position data in `Portfolio/Positions.csv`.
+  - Initializes each `Position` object with a ticker symbol and corresponding line in `Positions.csv` for easy data parsing.
+  
+- **Return Calculations**:
+  - The `checkPosition` method calculates the position’s length and return, offering a straightforward overview of performance.
+  
+- **Data Storage**:
+  - Daily positions are saved in CSV format, ensuring a clear record of historical data.
+  - Filename for positions is set to `Portfolio/Positions.csv` by default.
+
+## Getting Started
+
+1. **Clone the Repository**:
+    ```bash
+    git clone git@github.com:Guillaume-amann/AlgoTrading.git
+    ```
+
+2. **Compile the Project**:
+    Ensure you have a compatible C++ compiler installed. Then, compile the project:
+    ```bash
+    g++ -o portfolio_manager main.cpp Position.cpp
+    ```
+
+3. **Run the Program**:
+    ```bash
+    ./portfolio_manager
+    ```
+
+## Project Structure
+
+- Feel free to explore the Overview.pptx that maps the architecture of the project
+
+## Requirements
+
+- C++ compiler (e.g., GCC)
+- Standard C++ libraries
+
 
 ## macOS version
 
