@@ -11,7 +11,7 @@ private:
     string ticker;     //ticker of the Cie
     string dateStart;  //Date of first stock purchase
     float priceBought; //Average price per stock bought
-    int volume;      //Amount of stocks held
+    int posvolume;      //Amount of stocks held
     float posReturn; //Position absolute return as a pctg of price bought premium
     float posLength; //Position duration as a fraction of a 252-day year
 
@@ -42,7 +42,7 @@ public:
             getline(ss, field, ',');
             priceBought = stof(field);
             getline(ss, field, ',');
-            volume = stoi(field);
+            posvolume = stoi(field);
             getline(ss, field, ',');
             posReturn = stof(field);
             getline(ss, field, ',');
@@ -70,7 +70,7 @@ public:
     string getTicker() { return ticker; };
     string getDateStart() { return dateStart; };
     float getPriceBought() { return priceBought; };
-    int getVolume() { return volume; };
+    int getVolume() { return posvolume; };
     float getPosReturn() { return posReturn; };
     float getPosLength() { return posLength; };
 };
