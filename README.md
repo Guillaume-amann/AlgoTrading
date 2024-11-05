@@ -16,24 +16,6 @@ This C++ project provides a financial library designed for managing and analysin
   - Daily positions are saved in CSV format, ensuring a clear record of historical data.
   - Filename for positions is set to `Portfolio/Positions.csv` by default.
 
-## Getting Started
-
-1. **Clone the Repository**:
-    ```bash
-    git clone git@github.com:Guillaume-amann/AlgoTrading.git
-    ```
-
-2. **Compile the Project**:
-    Ensure you have a compatible C++ compiler installed. Then, compile the project:
-    ```bash
-    g++ -o portfolio_manager main.cpp Position.cpp
-    ```
-
-3. **Run the Program**:
-    ```bash
-    ./portfolio_manager
-    ```
-
 ## Project Structure
 
 - Feel free to explore the Overview.pptx that maps the architecture of the project
