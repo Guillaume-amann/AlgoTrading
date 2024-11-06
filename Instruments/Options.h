@@ -10,8 +10,11 @@ private:
     double timeToMaturity;  // Time to maturity (T) in years
     double volatility;      // Volatility (sigma) in %
     double riskFreeRate;    // Risk-free interest rate (r) in %
-    double dividendYield;    // Dividend yield (q)
+    double dividendYield;   // Dividend yield (q)
     char optionType;        // Option type ('C' for call, 'P' for put)
+
+    // Greeks
+    double deltaValue, gammaValue, vegaValue, rhoValue, thetaValue;
 
     // Standard normal cumulative distribution function
     double N(double x) const {
@@ -36,7 +39,14 @@ public:
     StockOption(double S, double K, double T, double sigma, double r, char type = 'C', double q = 0.0)
         : stockPrice(S), strikePrice(K), timeToMaturity(T), volatility(sigma), riskFreeRate(r), optionType(type), dividendYield(q) {}
  
-    double price() const {
+    double price() {
+
+        delta();
+        gamma();
+        vega();
+        rho();
+        theta();
+
         if (optionType == 'C') {
             return stockPrice * exp(-dividendYield * timeToMaturity) * N(d1()) - 
                    strikePrice * exp(-riskFreeRate * timeToMaturity) * N(d2());
@@ -47,45 +57,57 @@ public:
         }
     }
 
-    double delta() const {
-        if (optionType == 'C')
-            return exp(-dividendYield * timeToMaturity) * N(d1());
-        else
-            return exp(-dividendYield * timeToMaturity) * (N(d1()) - 1);
+    double delta() {
+        if (optionType == 'C') {
+            deltaValue = exp(-dividendYield * timeToMaturity) * N(d1());
+        } else {
+            deltaValue = exp(-dividendYield * timeToMaturity) * (N(d1()) - 1);
+        }
+        return deltaValue;
     }
 
-    double gamma() const {
-        return f(d1()) * exp(-dividendYield * timeToMaturity) / (stockPrice * volatility * sqrt(timeToMaturity));
+    double gamma() {
+        gammaValue = f(d1()) * exp(-dividendYield * timeToMaturity) / (stockPrice * volatility * sqrt(timeToMaturity));
+        return gammaValue;
     }
 
-    double vega() const {
-        return stockPrice * f(d1()) * exp(-dividendYield * timeToMaturity) * sqrt(timeToMaturity);
+    double vega() {
+        vegaValue = stockPrice * f(d1()) * exp(-dividendYield * timeToMaturity) * sqrt(timeToMaturity);
+        return vegaValue;
     }
 
-    double rho() const {
-        if (optionType == 'C')
-            return timeToMaturity * strikePrice * exp(-riskFreeRate * timeToMaturity) * N(d2());
-        else
-            return -timeToMaturity * strikePrice * exp(-riskFreeRate * timeToMaturity) * N(-d2());
+    double rho() {
+        rhoValue = (optionType == 'C') ? 
+            timeToMaturity * strikePrice * exp(-riskFreeRate * timeToMaturity) * N(d2()) : 
+            -timeToMaturity * strikePrice * exp(-riskFreeRate * timeToMaturity) * N(-d2());
+        return rhoValue;
     }
 
-    double theta() const {
+    double theta() {
         double term1 = (-stockPrice * f(d1()) * exp(-dividendYield * timeToMaturity) * volatility) / (2 * sqrt(timeToMaturity));
         double term2 = dividendYield * stockPrice * exp(-dividendYield * timeToMaturity) * N(d1());
         double term3 = riskFreeRate * strikePrice * exp(-riskFreeRate * timeToMaturity) * N(d2());
 
-        if (optionType == 'C')
-            return term1 - term2 - term3;
-        else
-            return term1 + term2 + riskFreeRate * strikePrice * exp(-riskFreeRate * timeToMaturity) * N(-d2());
+        thetaValue = (optionType == 'C') ? 
+            term1 - term2 - term3 : 
+            term1 + term2 + riskFreeRate * strikePrice * exp(-riskFreeRate * timeToMaturity) * N(-d2());
+        return thetaValue;
     }
 
-    string getStockTicker() { return stockTicker; };     
-    double getStockPrice() { return stockPrice; };
-    double getStrikePrice() { return strikePrice; };
-    double getTimeToMaturity() { return timeToMaturity; };
-    double getVolatility() { return volatility; };
-    double getRiskFreeRate() { return riskFreeRate; };
-    double getDividendYield() { return dividendYield; };
-    char getOptionType() { return optionType; };
+    string getStockTicker() const { return stockTicker; };     
+    double getStockPrice() const { return stockPrice; };
+    double getStrikePrice() const { return strikePrice; };
+    double getTimeToMaturity() const { return timeToMaturity; };
+    double getVolatility() const { return volatility; };
+    double getRiskFreeRate() const { return riskFreeRate; };
+    double getDividendYield() const { return dividendYield; };
+    char getOptionType() const { return optionType; };
+
+    void displayGreeks() const {
+        cout << "Delta: " << deltaValue << endl;
+        cout << "Gamma: " << gammaValue << endl;
+        cout << "Vega: " << vegaValue << endl;
+        cout << "Rho: " << rhoValue << endl;
+        cout << "Theta: " << thetaValue << endl;
+    }
 };

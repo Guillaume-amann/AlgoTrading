@@ -15,19 +15,20 @@ void calculateCallGreeksSingle(StockOption &call) {
     call.theta();
 }
 
-
 // Multithreaded calculation
 void calculateCallGreeksMulti(StockOption &call) {
-    thread priceThread(&StockOption::price, &call);
-    thread deltaThread(&StockOption::delta, &call);
-    thread gammaThread(&StockOption::gamma, &call);
-    thread vegaThread(&StockOption::vega, &call);
-    thread rhoThread(&StockOption::rho, &call);
-    thread thetaThread(&StockOption::theta, &call);
+    call.price();
 
-    priceThread.join();
-    deltaThread.join();
-    gammaThread.join();
+    thread deltaGammaThread([&call]() {
+        call.delta();
+        call.gamma();
+    });
+
+    thread vegaThread([&call]() { call.vega(); });
+    thread rhoThread([&call]() { call.rho(); });
+    thread thetaThread([&call]() { call.theta(); });
+
+    deltaGammaThread.join();
     vegaThread.join();
     rhoThread.join();
     thetaThread.join();
@@ -40,21 +41,25 @@ int main() {
     double v = 0.20;   // Yearly volatility in %
     double rate = 0.0325;
 
-    StockOption call(S, K, T, v, rate, 'C');
+    StockOption call1(S, K, T, v, rate, 'C');
+    StockOption call2(S, K, T, v, rate, 'C');
 
     // Measure single-threaded time
     auto startSingle = high_resolution_clock::now();
-    calculateCallGreeksSingle(call);
+    calculateCallGreeksSingle(call1);
     auto endSingle = high_resolution_clock::now();
     auto durationSingle = duration_cast<microseconds>(endSingle - startSingle);
     cout << "Single-threaded execution time: " << durationSingle.count() << " µs" << endl;
 
     // Measure multi-threaded time
     auto startMulti = high_resolution_clock::now();
-    calculateCallGreeksMulti(call);
+    calculateCallGreeksMulti(call2);
     auto endMulti = high_resolution_clock::now();
     auto durationMulti = duration_cast<microseconds>(endMulti - startMulti);
     cout << "Multi-threaded execution time: " << durationMulti.count() << " µs" << endl;
+
+    cout << "Call option price: $" << call1.price() << endl;
+    call1.displayGreeks();
 
     return 0;
 }
