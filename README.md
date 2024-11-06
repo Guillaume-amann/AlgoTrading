@@ -24,7 +24,8 @@ This C++ project provides a financial library designed for managing and analysin
 
 - C++ compiler (e.g., GCC)
 - Standard C++ libraries
-
+- Python 3.13
+- yfinance python library
 
 ## macOS version
 
