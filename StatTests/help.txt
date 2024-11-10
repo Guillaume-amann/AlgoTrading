@@ -1,0 +1,30 @@
+the presence of a _build directory, along with dune and dune-project files, is 
+not strictly necessary if you’re compiling small projects or individual files 
+using ocamlc or ocamlfind.
+
+Explanation:
+
+	•	.ml Files Only: If your project consists of just a few .ml files and 
+        you’re manually compiling them, tools like ocamlc, ocamlfind, and 
+        ocamlopt are enough.
+
+	•	Dune Build System: Dune is a build system for OCaml projects that 
+        automates the build process. It’s more useful when you have a more 
+        complex project structure with multiple modules, dependencies, and 
+        larger codebases.
+
+my_project/
+├── dune-project
+├── src/
+│   ├── dune
+│   ├── forwardPrice.ml
+│   └── otherModule.ml
+└── lib/
+    ├── dune
+    └── someLibrary.ml
+
+dune build
+
+dune exec ./forward.exe
+
+dune clean

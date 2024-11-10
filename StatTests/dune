@@ -1,0 +1,7 @@
+(executable
+ (name Test)
+ (modules IsNormal test)
+ ;;(flags (:standard -opaque)) ;;prevents the generation of the .cmi file (interface file). 
+                             ;;The .cmo file will still be created if you’re building using 
+                             ;;ocamlc, but this flag helps minimize unnecessary interface file generation.
+)
