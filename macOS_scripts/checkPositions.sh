@@ -31,5 +31,5 @@ SECONDS=0
 
 wait
 echo "Total execution time: $SECONDS seconds"
-# rm Portfolio/Positions.csv
-# mv Portfolio/copyPositions.csv Portfolio/Positions.csv
+rm Portfolio/Positions.csv
+mv Portfolio/copyPositions.csv Portfolio/Positions.csv

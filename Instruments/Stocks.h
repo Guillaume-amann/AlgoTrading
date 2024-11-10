@@ -127,11 +127,11 @@ public:
         Py_Finalize();
     }
 
-    string getTicker() { return ticker; };
-    vector<double> getPrices() { return prices; };
-    vector<string> getDates() { return dates; };
-    double getLastPrice() { return lastPrice; };
-    string getLastDate() { return lastDate; };
-    double getRSI() { return RSI14; };
+    string getTicker() { return ticker; }
+    vector<double> getPrices() { return prices; }
+    vector<string> getDates() { return dates; }
+    double getLastPrice() { return lastPrice; }
+    string getLastDate() { return lastDate; }
+    double getRSI() { return RSI14; }
     vector<double> getMACD() { return MACD; }
-};
+}
