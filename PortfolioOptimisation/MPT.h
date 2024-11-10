@@ -9,6 +9,7 @@ private:
     vector<double> weights;
 
 public:
+    Portfolio(vector<string> tickers) {}
     vector<string> getStocks() { return stocks; };
     vector<double> getStocksReturns() { return stocksReturns; }; 
     vector<double> getPortReturns() { return portReturns; };
