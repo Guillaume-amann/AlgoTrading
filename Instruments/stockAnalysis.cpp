@@ -4,7 +4,7 @@
 using namespace std;
 
 int main() {
-    Stock myStock("MSFT");
+    Stock myStock("AAPL");
 
 	cout << "Stock Price: $" << myStock.getLastPrice() << endl;
 	cout << "As of " << myStock.getLastDate() << endl;

@@ -1,6 +1,6 @@
 #include <iostream>
-#include <Python.h>
-#include <filesystem> 
+#include <fstream>
+#include <sstream>
 using namespace std;
 
 class Stock {
@@ -33,7 +33,6 @@ private:
         return 100 - (100 / (1 + rs));
     }
 
-    // Helper function to calculate exponential moving average
     vector<double> calculateEMA(const vector<double>& data, int period) {
         vector<double> ema(data.size());
         double multiplier = 2.0 / (period + 1);
@@ -45,7 +44,6 @@ private:
         return ema;
     }
 
-    // Function to calculate MACD
     void calculateMACD() {
         vector<double> ema12 = calculateEMA(prices, 19);
         vector<double> ema26 = calculateEMA(prices, 26);
@@ -58,73 +56,63 @@ private:
 
 public:
     Stock(const string& stockTicker): ticker(stockTicker), lastPrice(0.0), RSI14(0.0) {
-        // Initialize Python
-        Py_Initialize();
+        ifstream file("Users/guillaume/AlgoTrading/Database/Universe.csv");
 
-        // Set the Python path to include the Web directory
-        PyRun_SimpleString("import sys");
-        PyRun_SimpleString("sys.path.append('/Users/guillaume/AlgoTrading/Web')");
-
-        // Import the getStockPrice module
-        PyObject* pModule = PyImport_ImportModule("getStockPrice");
-        if (pModule != nullptr) {
-            // Get the YTD function
-            PyObject* pFunc = PyObject_GetAttrString(pModule, "YTD");
-            if (pFunc && PyCallable_Check(pFunc)) {
-                // Call the function with the ticker symbol as an argument
-                PyObject* pArgs = PyTuple_Pack(1, PyUnicode_FromString(ticker.c_str()));
-                PyObject* pValue = PyObject_CallObject(pFunc, pArgs);
-
-                // Check if the return value is a tuple
-                if (pValue != nullptr && PyTuple_Check(pValue)) {
-                    // Extract prices (first element) and dates (second element)
-                    PyObject* pPricesList = PyTuple_GetItem(pValue, 0);
-                    PyObject* pDatesList = PyTuple_GetItem(pValue, 1);
-
-                    if (PyList_Check(pPricesList) && PyList_Check(pDatesList)) {
-                        Py_ssize_t size = PyList_Size(pPricesList);
-                        prices.reserve(size);
-                        dates.reserve(size);
-
-                        for (Py_ssize_t i = 0; i < size; ++i) {
-                            // Extract price
-                            PyObject* pPrice = PyList_GetItem(pPricesList, i);
-                            prices.push_back(PyFloat_AsDouble(pPrice));
-
-                            // Extract date
-                            PyObject* pDate = PyList_GetItem(pDatesList, i);
-                            dates.push_back(PyUnicode_AsUTF8(pDate));
-                        }
-                        
-                        // Set lastPrice to the last element in prices if available
-                        if (!prices.empty()) {
-                            lastPrice = prices.back();
-                            lastDate = dates.back();
-                        }
-
-                        RSI14 = calculateRSI();
-                        calculateMACD();
-                        
-                    } else {
-                        PyErr_Print();
-                    }
-                } else {
-                    PyErr_Print();
-                }
-
-                // Clean up
-                Py_XDECREF(pValue);
-                Py_XDECREF(pArgs);
-                Py_XDECREF(pFunc);
-            } else {
-                PyErr_Print();
-            }
-            Py_XDECREF(pModule);
-        } else {
-            PyErr_Print();
+        if (!file.is_open()) {
+            cerr << "Failed to open the file." << endl;
+            return;
         }
 
-        Py_Finalize();
+        string line;
+        string header;
+        vector<string> columns;
+        
+        // Read the header to find the ticker's column
+        getline(file, header);
+        stringstream headerStream(header);
+        string column;
+        while (getline(headerStream, column, ',')) {
+            columns.push_back(column);
+        }
+
+        int tickerColumnIndex = -1;
+        for (size_t i = 0; i < columns.size(); ++i) {
+            if (columns[i] == stockTicker) {
+                tickerColumnIndex = i;
+                break;
+            }
+        }
+
+        if (tickerColumnIndex == -1) {
+            cerr << "Ticker not found in the header." << endl;
+            return;
+        }
+
+        // Read the data rows
+        while (getline(file, line)) {
+            stringstream lineStream(line);
+            string date, price;
+            int columnIndex = 0;
+            bool foundData = false;
+
+            while (getline(lineStream, column, ',')) {
+                if (columnIndex == tickerColumnIndex) {
+                    prices.push_back(stod(column)); // Add price to the prices vector
+                    foundData = true;
+                }
+                else if (columnIndex == columns.size() - 1) {
+                    dates.push_back(column); // Add date to the dates vector
+                }
+                columnIndex++;
+            }
+
+            if (foundData) {
+                lastPrice = prices.back();  // Set last price
+                lastDate = dates.back();    // Set last date
+            }
+        }
+
+        file.close();
     }
 
     string getTicker() { return ticker; }
