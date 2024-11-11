@@ -1,20 +1,14 @@
 import yfinance as yf
+import pandas as pd
 
-def YTD(ticker):
-    try:
-        stock = yf.Ticker(ticker)
-        hist = stock.history(period="2y")
+df = pd.read_csv("Database/Universe.csv")
+tickers = df.columns.tolist()[:-1] # Assuming "T1,...,Tn,Date"
+stock_data = pd.DataFrame()
 
-        if len(hist) >= 252:
-            prices = hist['Close'].iloc[-252:].tolist()
-            dates = [str(date.date()) for date in hist.index[-252:]]
-        else:
-            print(f"Warning: Only {len(hist)} trading days available.")
-            prices = hist['Close'].tolist()
-            dates = [str(date.date()) for date in hist.index]
-        
-        return prices, dates  # Return as a tuple
-        
-    except Exception as e:
-        print(f"Error fetching YTD stock data: {e}")
-        return None, None
+for ticker in tickers:
+    stock = yf.Ticker(ticker)
+    data = stock.history(period="2y")  # Fetch the last 300 days of data
+    stock_data[ticker] = data['Close'][-252:]  # Keep only the last 252 values
+
+stock_data['Date'] = stock_data.index[-252:].strftime('%Y-%m-%d')  # Convert index to string dates
+stock_data.to_csv("Database/Universe.csv", index=False)
