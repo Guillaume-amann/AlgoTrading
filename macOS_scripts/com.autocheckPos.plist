@@ -7,7 +7,7 @@
     <string>com.autocheckPos</string>
     <key>ProgramArguments</key>
     <array>
-        <string>/Users/guillaume/checkPositions.sh</string>
+        <string>/Users/guillaume/AlgoTrading/macOS_scripts/checkPositions.sh</string>
     </array>
     <key>StartInterval</key>
     <integer>36000</integer> <!-- Executes every 10 hours (36000 seconds) -->

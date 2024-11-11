@@ -7,7 +7,7 @@
     <string>com.morningMail</string>
     <key>ProgramArguments</key>
     <array>
-        <string>/Users/username/auto.sh</string>
+        <string>/Users/guillaume/AlgoTrading/macOS_scripts/auto.sh</string>
     </array>
     <key>StartCalendarInterval</key>
     <dict>
