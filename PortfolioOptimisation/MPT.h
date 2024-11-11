@@ -15,7 +15,7 @@ private:
     vector<double> stocksReturns;
     vector<double> portReturns;
     vector<double> weights;
-    string filename = "/Users/guillaume/Downloads/Perso/Informatique/C++/AlgoTrading/Database/Universe.csv";  // Default file location for tickers
+    string filename = "../Database/Universe.csv";  // Default file location for tickers
     double hvar;
 
     // Helper function to read tickers from a CSV file

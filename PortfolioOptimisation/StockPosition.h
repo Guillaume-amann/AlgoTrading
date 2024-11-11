@@ -15,7 +15,7 @@ private:
     float posReturn; //Position absolute return as a pctg of price bought premium
     float posLength; //Position duration as a fraction of a 252-day year
 
-    const string filename = "/Users/guillaume/Downloads/Perso/Informatique/C++/AlgoTrading/Portfolio/Positions.csv";
+    const string filename = "../Database/Positions.csv";
 
     Stock myStock;     // Stock object to check position
 

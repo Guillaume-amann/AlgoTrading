@@ -63,7 +63,7 @@ public:
 
         // Set the Python path to include the Web directory
         PyRun_SimpleString("import sys");
-        PyRun_SimpleString("sys.path.append('/Users/guillaume/Downloads/Perso/Informatique/C++/AlgoTrading/Web')");
+        PyRun_SimpleString("sys.path.append('/Users/guillaume/AlgoTrading/Web')");
 
         // Import the getStockPrice module
         PyObject* pModule = PyImport_ImportModule("getStockPrice");
@@ -134,4 +134,4 @@ public:
     string getLastDate() { return lastDate; }
     double getRSI() { return RSI14; }
     vector<double> getMACD() { return MACD; }
-}
+};
