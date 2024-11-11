@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cmath>
-#include "../Numeric/Ditributions.h"
+#include <fstream>
+#include "../Numeric/Distributions.h"
 #include "../Models/Heston.h"
 #include "../Models/BlackScholesMerton.h"
 using namespace std;
@@ -12,6 +13,7 @@ private:
     double strikePrice;     // Strike price of the option (K)
     double timeToMaturity;  // Time to maturity (T) in years
     double volatility;      // Volatility (sigma) in %
+    double impliedVolatility;
     double riskFreeRate;    // Risk-free interest rate (r) in %
     double dividendYield;   // Dividend yield (q)
     
@@ -36,13 +38,15 @@ public:
     StockOption(double S, double K, double T, double sigma, double r, char type = 'C', double q = 0.0, string model = "BSM")
         : stockPrice(S), strikePrice(K), timeToMaturity(T), volatility(sigma), riskFreeRate(r), optionType(type), dividendYield(q), modelType(model) {
 
+        impliedVolatility = calculateImpliedVolatility();
         optionPrice = price();
         deltaValue = delta();
         gammaValue = gamma();
         vegaValue = vega();
         rhoValue = rho();
-        thetaValue = theta();    
-    
+        thetaValue = theta();
+
+        plotDataForPython();
     }
  
     double price() {
@@ -75,12 +79,12 @@ public:
     }
 
     double gamma() {
-        gammaValue = f(d1()) * exp(-dividendYield * timeToMaturity) / (stockPrice * volatility * sqrt(timeToMaturity));
+        gammaValue = normal(d1()) * exp(-dividendYield * timeToMaturity) / (stockPrice * volatility * sqrt(timeToMaturity));
         return gammaValue;
     }
 
     double vega() {
-        vegaValue = stockPrice * f(d1()) * exp(-dividendYield * timeToMaturity) * sqrt(timeToMaturity);
+        vegaValue = stockPrice * normal(d1()) * exp(-dividendYield * timeToMaturity) * sqrt(timeToMaturity);
         return vegaValue;
     }
     
@@ -106,14 +110,57 @@ public:
         return thetaValue;
     }
 
-    string getStockTicker() const { return stockTicker; };     
-    double getStockPrice() const { return stockPrice; };
-    double getStrikePrice() const { return strikePrice; };
-    double getTimeToMaturity() const { return timeToMaturity; };
-    double getVolatility() const { return volatility; };
-    double getRiskFreeRate() const { return riskFreeRate; };
-    double getDividendYield() const { return dividendYield; };
-    char getOptionType() const { return optionType; };
+    double calculateImpliedVolatility(double marketPrice = 0.0, double tolerance = 1e-6, int maxIterations = 100) {
+        if (marketPrice == 0.0) {
+            marketPrice = optionPrice; // Use current calculated option price if no market price is given
+        }
+
+        double low = 1e-6;
+        double high = 5.0;
+        double midVol;
+        double midPrice;
+
+        for (int i = 0; i < maxIterations; ++i) {
+            midVol = (low + high) / 2.0;
+            volatility = midVol;  // Temporarily set to test price with this vol
+            midPrice = price();
+
+            if (fabs(midPrice - marketPrice) < tolerance) {
+                impliedVolatility = midVol;
+                return impliedVolatility;
+            }
+
+            if (midPrice < marketPrice) {
+                low = midVol;
+            } else {
+                high = midVol;
+            }
+        }
+
+        throw runtime_error("Implied volatility calculation did not converge.");
+    }
+
+    void plotDataForPython(const string& filename = "./Database/option_data.csv") {
+        ofstream file(filename);
+        if (!file.is_open()) {
+            throw runtime_error("Unable to open file for plotting data.");
+        }
+
+        file << "StockPrice,StrikePrice,TimeToMaturity,ImpliedVolatility\n";
+        file << stockPrice << "," << strikePrice << "," << timeToMaturity << "," << impliedVolatility << "\n";
+        
+        file.close();
+    }
+
+    string getStockTicker() const { return stockTicker; }
+    double getStockPrice() const { return stockPrice; }
+    double getStrikePrice() const { return strikePrice; }
+    double getTimeToMaturity() const { return timeToMaturity; }
+    double getVolatility() const { return volatility; }
+    double getImpliedVolatility() const { return impliedVolatility; }
+    double getRiskFreeRate() const { return riskFreeRate; }
+    double getDividendYield() const { return dividendYield; }
+    char getOptionType() const { return optionType; }
 
     void displayGreeks() const {
         cout << "Delta: " << deltaValue << endl;

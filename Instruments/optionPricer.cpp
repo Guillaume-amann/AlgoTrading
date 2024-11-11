@@ -4,7 +4,7 @@
 #include "Options.h"
 
 using namespace std;
-using namespace std::chrono;
+using namespace chrono;
 
 void calculateCallGreeksSingle(StockOption &call) {
     call.price();

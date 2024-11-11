@@ -1,51 +1,53 @@
 import yfinance as yf
-import pandas as pd
+import csv
+import os
 from datetime import datetime
 
-def fetch_options(ticker):
-    """
-    Fetches call and put options for a given stock ticker and stores them in CSV files.
-    Includes only the specified columns and calculates maturity (time to expiration) in days.
-    
-    Parameters:
-    ticker (str): The stock ticker symbol to fetch options for.
-    """
-    # Fetch the stock data
+def fetch_call(ticker, csv_file="./Database/Call.csv"):
     stock = yf.Ticker(ticker)
+    expiration_dates = stock.options
+    stock_price = stock.history(period="1d")["Close"].iloc[0]  # Get the current stock price
 
-    # Get available expiration dates
-    expirations = stock.options
+    with open(csv_file, mode="w", newline="") as file:
+        writer = csv.writer(file)
+        
+        writer.writerow(["StockPrice", "Strike", "LastPrice", "Maturity"])
+        current_date = datetime.now()
 
-    call_options = []
-    put_options = []
+        for expiration in expiration_dates:
+            option_chain = stock.option_chain(expiration)
+            calls = option_chain.calls
 
-    # Retrieve options for each expiration date
-    for expiration in expirations:
-        options = stock.option_chain(expiration)
+            expiration_date = datetime.strptime(expiration, "%Y-%m-%d")
+            maturity_years = (expiration_date - current_date).days / 365.0
 
-        # Calculate maturity in days
-        maturity = (pd.to_datetime(expiration) - pd.to_datetime(datetime.now())).days
+            for _, row in calls.iterrows():
+                strike = row["strike"]
+                last_price = row["lastPrice"]
 
-        # Select only the specified columns for call and put options
-        calls_filtered = options.calls[['contractSymbol', 'lastTradeDate', 'strike', 'lastPrice']].copy()
-        puts_filtered = options.puts[['contractSymbol', 'lastTradeDate', 'strike', 'lastPrice']].copy()
+                writer.writerow([stock_price, strike, last_price, maturity_years])
 
-        # Add maturity to the filtered DataFrames
-        calls_filtered['maturity'] = maturity
-        puts_filtered['maturity'] = maturity
+def fetch_put(ticker, csv_file="./Database/Put.csv"):
 
-        # Append filtered call and put options to their respective lists
-        call_options.append(calls_filtered)
-        put_options.append(puts_filtered)
+    stock = yf.Ticker(ticker)
+    expiration_dates = stock.options
+    stock_price = stock.history(period="1d")["Close"].iloc[0]  # Get the current stock price
 
-    # Concatenate all calls and puts into a single DataFrame
-    all_calls = pd.concat(call_options, ignore_index=True)
-    all_puts = pd.concat(put_options, ignore_index=True)
+    with open(csv_file, mode="w", newline="") as file:
+        writer = csv.writer(file)
+        
+        writer.writerow(["StockPrice", "Strike", "LastPrice", "Maturity"])
+        current_date = datetime.now()
 
-    # Store call and put options in CSV files
-    all_calls.to_csv('Web/call.csv', index=False)
-    all_puts.to_csv('Web/put.csv', index=False)
+        for expiration in expiration_dates:
+            option_chain = stock.option_chain(expiration)
+            puts = option_chain.puts
 
-    print(f'Options for {ticker} have been saved to call.csv and put.csv.')
+            expiration_date = datetime.strptime(expiration, "%Y-%m-%d")
+            maturity_years = (expiration_date - current_date).days / 365.0
 
-fetch_options('AAPL')
+            for _, row in puts.iterrows():
+                strike = row["strike"]
+                last_price = row["lastPrice"]
+
+                writer.writerow([stock_price, strike, last_price, maturity_years])
