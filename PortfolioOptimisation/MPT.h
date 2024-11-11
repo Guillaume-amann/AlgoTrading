@@ -15,7 +15,7 @@ private:
     vector<double> stocksReturns;
     vector<double> portReturns;
     vector<double> weights;
-    string filename = "Database/Universe.csv";  // Default file location for tickers
+    string filename = "/Users/guillaume/Downloads/Perso/Informatique/C++/AlgoTrading/Database/Universe.csv";  // Default file location for tickers
     double hvar;
 
     // Helper function to read tickers from a CSV file
@@ -40,10 +40,7 @@ private:
     }
 
 public:
-    // Constructor initializes stocks by reading from the filename
-    Portfolio() : hvar(0.0) {
-        stocks = readTickers(filename);
-    }
+    Portfolio() : hvar(0.0) { stocks = readTickers(filename); }
 
     // Generates random weights for the portfolio and scales them to 100%
     void generateRandomWeights(int num_assets) {
@@ -62,13 +59,13 @@ public:
         }
     }
 
-    // Calculates portfolio return, volatility, and Sharpe ratio
     tuple<double, double, double> calculatePortfolioMetrics(const VectorXd& returns, const MatrixXd& cov_mat, double time) {
         int num_assets = cov_mat.rows();
         VectorXd eigen_weights = VectorXd::Map(weights.data(), num_assets);
 
         double portfolio_return = eigen_weights.dot(returns / 100);
-        double portfolio_vol = sqrt(eigen_weights.transpose() * cov_mat * eigen_weights * sqrt(time));
+        double portfolio_variance = eigen_weights.transpose() * cov_mat * eigen_weights;
+        double portfolio_vol = sqrt(portfolio_variance * sqrt(time));
         double sharpe = round((portfolio_return - 5.33) / portfolio_vol * 1000) / 1000.0;
 
         return make_tuple(portfolio_return, portfolio_vol, sharpe);
@@ -83,7 +80,7 @@ public:
     }
 
     // Historical Value at Risk (hVaR)
-    void calculateVaR(const VectorXd& portfolio_returns, int alpha) {
+    void calculateVaR(const VectorXd& portfolio_returns, int alpha=5) {
         vector<double> returns_vec(portfolio_returns.data(), portfolio_returns.data() + portfolio_returns.size());
         sort(returns_vec.begin(), returns_vec.end());
         int index = static_cast<int>((alpha / 100.0) * returns_vec.size());
