@@ -51,28 +51,8 @@ double bootstrapStandardDeviation(const vector<double>& data, int numSamples=100
     return mean;
 }
 
-// Newton-Raphson Method
-double newtonRaphsonMethod(std::function<double(double)> f, std::function<double(double)> f_prime, double initialGuess, double tolerance = 1e-6, int maxIterations = 100) {
-    double x = initialGuess;
-    for (int i = 0; i < maxIterations; ++i) {
-        double fx = f(x);
-        double fpx = f_prime(x);
-
-        if (fabs(fpx) < 1e-10) {
-            throw runtime_error("Derivative too small; Newton-Raphson method may not converge.");
-        }
-
-        double nextX = x - fx / fpx;
-        if (std::fabs(nextX - x) < tolerance) {
-            return nextX;
-        }
-        x = nextX;
-    }
-    throw runtime_error("Newton-Raphson method did not converge within the maximum number of iterations.");
-}
-
 // Bisection Method
-double bisectionMethod(function<double()> f, double lowerBound, double upperBound, double tolerance = 1e-6, int maxIterations = 100) {
+double bisectionMethod(function<double(double)> f, double lowerBound, double upperBound, double tolerance = 1e-6, int maxIterations = 100) {
     if (f(lowerBound) * f(upperBound) > 0) {
         throw invalid_argument("Function values at the bounds must have opposite signs.");
     }
@@ -96,7 +76,7 @@ double bisectionMethod(function<double()> f, double lowerBound, double upperBoun
 }
 
 // Secant Method
-double secantMethod(function<double()> f, double x0, double x1, double tolerance = 1e-6, int maxIterations = 100) {
+double secantMethod(std::function<double(double)> f, double x0, double x1, double tolerance = 1e-6, int maxIterations = 100) {
     for (int i = 0; i < maxIterations; ++i) {
         double fx0 = f(x0);
         double fx1 = f(x1);
@@ -117,7 +97,7 @@ double secantMethod(function<double()> f, double x0, double x1, double tolerance
 }
 
 // Brent's Method
-double brentMethod(function<double()> f, double lowerBound, double upperBound, double tolerance = 1e-6, int maxIterations = 100) {
+double brentMethod(std::function<double(double)> f, double lowerBound, double upperBound, double tolerance = 1e-6, int maxIterations = 100) {
     if (f(lowerBound) * f(upperBound) > 0) {
         throw invalid_argument("Function values at the bounds must have opposite signs.");
     }
