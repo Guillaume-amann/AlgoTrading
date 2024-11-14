@@ -40,6 +40,7 @@ public:
         : stockPrice(S), strikePrice(K), timeToMaturity(T), riskFreeRate(r), lastPrice(P), optionType(type), dividendYield(q), modelType(model) {
 
         volatility = calculateImpliedVolatility(lastPrice);
+
         optionPrice = price();
         deltaValue = delta();
         gammaValue = gamma();
@@ -52,7 +53,7 @@ public:
  
     double price() {
         if (modelType == "BSM") {
-            return BSM_price();
+            return BSM_price(volatility);
         } else if (modelType == "Heston") {
             return Heston_price();
         } else {
@@ -60,8 +61,8 @@ public:
         }
     }
 
-    double BSM_price() {
-        BSMModel myModel(stockPrice, strikePrice, timeToMaturity, volatility, riskFreeRate, dividendYield, optionType); 
+    double BSM_price(double tempVol) {
+        BSMModel myModel(stockPrice, strikePrice, timeToMaturity, tempVol, riskFreeRate, dividendYield, optionType); 
         return myModel.price();
     }
 
@@ -113,16 +114,11 @@ public:
 
     double calculateImpliedVolatility(double marketPrice, double tolerance = 1e-2, int maxIterations = 1000) {
         // Function pointers for BSM pricing and Vega
-        std::function<double()> pricingFunc = std::bind(&StockOption::BSM_price, this);
-        std::function<double()> vegaFunc = std::bind(&StockOption::vega, this);
+        std::function<double(double)> pricingFunc = std::bind(&StockOption::BSM_price, this, std::placeholders::_1);
         
         // Call the Bisection method
         double impliedVolBisection = bisectionMethod(pricingFunc, 0.001, 5.0, marketPrice, tolerance);
         cout << "Implied Volatility (Bisection): " << impliedVolBisection << endl;
-
-        // Call the Newton-Raphson method
-        double impliedVolNewton = newtonRaphsonMethod(pricingFunc, vegaFunc, 0.2, marketPrice, tolerance);
-        cout << "Implied Volatility (Newton-Raphson): " << impliedVolNewton << endl;
 
         // Call the Secant method
         double impliedVolSecant = secantMethod(pricingFunc, 0.001, 0.5, marketPrice, tolerance);
