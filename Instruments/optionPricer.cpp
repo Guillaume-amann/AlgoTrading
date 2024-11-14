@@ -39,10 +39,11 @@ int main() {
     double K = 100.0;  // Strike Price K
     double T = 1;      // Years to maturity
     double v = 0.20;   // Yearly volatility in %
+    double s = 0.1;
     double rate = 0.0325;
 
-    StockOption call1(S, K, T, v, rate, 'C');
-    StockOption call2(S, K, T, v, rate, 'C');
+    StockOption call1(S, K, T, v, s, rate, 'C');
+    StockOption call2(S, K, T, v, s, rate, 'C');
 
     // Measure single-threaded time
     auto startSingle = high_resolution_clock::now();
@@ -60,6 +61,9 @@ int main() {
 
     cout << "Call option price: $" << call1.price() << endl;
     call1.displayGreeks();
+    cout << call1.getImpliedVolatility();
+    cout << call1.getVolatility();
+    call1.plotDataForPython();
 
     return 0;
 }

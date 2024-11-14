@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include <fstream>
+#include "../Regressors/Volatility.h"
 #include "../Numeric/Distributions.h"
 #include "../Models/Heston.h"
 #include "../Models/BlackScholesMerton.h"
@@ -110,34 +111,42 @@ public:
         return thetaValue;
     }
 
-    double calculateImpliedVolatility(double marketPrice = 0.0, double tolerance = 1e-6, int maxIterations = 100) {
+    double calculateImpliedVolatility(double marketPrice=0.0, double tolerance=1e-5, int maxIterations=100) {
         if (marketPrice == 0.0) {
-            marketPrice = optionPrice; // Use current calculated option price if no market price is given
+            marketPrice = optionPrice;  // Use the current option price if no market price is given.
         }
 
-        double low = 1e-6;
-        double high = 5.0;
-        double midVol;
-        double midPrice;
+        auto pricingFunction = [this](double vol) {
+            this->volatility = vol;
+            return price();
+        };
 
-        for (int i = 0; i < maxIterations; ++i) {
-            midVol = (low + high) / 2.0;
-            volatility = midVol;  // Temporarily set to test price with this vol
-            midPrice = price();
+        auto vegaFunction = [this](double vol) {
+            this->volatility = vol;
+            return vega();
+        };
 
-            if (fabs(midPrice - marketPrice) < tolerance) {
-                impliedVolatility = midVol;
-                return impliedVolatility;
-            }
+        try {
+            // Call the Bisection method
+            double impliedVolBisection = bisectionMethod(pricingFunction, 0.001, 5.0);
+            cout << "Implied Volatility (Bisection): " << impliedVolBisection << endl;
 
-            if (midPrice < marketPrice) {
-                low = midVol;
-            } else {
-                high = midVol;
-            }
+            // Call the Newton-Raphson method
+            double impliedVolNewton = newtonRaphsonMethod(vegaFunction, vegaFunction, 0.001);
+            cout << "Implied Volatility (Newton-Raphson): " << impliedVolNewton << endl;
+
+            // Call the Secant method
+            double impliedVolSecant = secantMethod(pricingFunction, 0.001, 0.5);
+            cout << "Implied Volatility (Secant): " << impliedVolSecant << endl;
+
+            // Return the first method's result as default
+            impliedVolatility = impliedVolBisection;
+            return impliedVolatility;
+
+        } catch (const std::exception& e) {
+            cerr << "Error in calculating implied volatility: " << e.what() << endl;
+            throw;
         }
-
-        throw runtime_error("Implied volatility calculation did not converge.");
     }
 
     void plotDataForPython(const string& filename = "./Database/option_data.csv") {
