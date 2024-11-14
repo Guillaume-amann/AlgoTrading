@@ -3,16 +3,6 @@
 #include <random>
 using namespace std;
 
-vector<double> LogReturns(const vector<double>& prices) {
-    vector<double> returns;
-    for (size_t i = 1; i < prices.size(); ++i) {
-        // Log return calculation: ln(S_t / S_{t-1})
-        double logReturn = log(prices[i] / prices[i - 1]);
-        returns.push_back(logReturn);
-    }
-    return returns;
-}
-
 double realisedVol(const vector<double>& data, const string& type = "population") {
     int n = data.size();
     double mean = accumulate(data.begin(), data.end(), 0.0) / n;
