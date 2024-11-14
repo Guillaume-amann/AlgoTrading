@@ -1,4 +1,6 @@
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include "Stocks.h"
 #include "../Regressors/Volatility.h"
 using namespace std;
@@ -10,7 +12,7 @@ int main() {
 	cout << "As of " << myStock.getLastDate() << endl;
 	cout << "RSI(14): " << myStock.getRSI() << endl;
 
-	vector<double> ret = LogReturns(myStock.getPrices());
+	vector<double> ret = myStock.getLogReturns();
 	double vol1 = realisedVol(ret)*100;
 	double vol2 = bootstrapStandardDeviation(ret)*100;
 

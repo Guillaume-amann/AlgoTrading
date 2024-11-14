@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <cmath>
 using namespace std;
 
 class Stock {
@@ -11,6 +12,7 @@ private:
     double lastPrice;
     string lastDate;
 
+    vector<double> logReturns;
     double RSI14;
     vector<double> MACD;
 
@@ -54,23 +56,26 @@ private:
         }
     }
 
+    void calculateLogReturns() {
+        for (size_t i = 1; i < prices.size(); ++i) {
+            double logReturn = log(prices[i] / prices[i - 1]);
+            logReturns.push_back(logReturn);
+        }
+    }
+
 public:
     Stock(const string& stockTicker): ticker(stockTicker), lastPrice(0.0), RSI14(0.0) {
-        ifstream file("Users/guillaume/AlgoTrading/Database/Universe.csv");
-
-        if (!file.is_open()) {
-            cerr << "Failed to open the file." << endl;
-            return;
-        }
-
+        ifstream file("/Users/guillaume/AlgoTrading/Database/Universe.csv");
+        
         string line;
         string header;
         vector<string> columns;
-        
+
         // Read the header to find the ticker's column
         getline(file, header);
         stringstream headerStream(header);
         string column;
+        
         while (getline(headerStream, column, ',')) {
             columns.push_back(column);
         }
@@ -81,11 +86,6 @@ public:
                 tickerColumnIndex = i;
                 break;
             }
-        }
-
-        if (tickerColumnIndex == -1) {
-            cerr << "Ticker not found in the header." << endl;
-            return;
         }
 
         // Read the data rows
@@ -100,7 +100,7 @@ public:
                     prices.push_back(stod(column)); // Add price to the prices vector
                     foundData = true;
                 }
-                else if (columnIndex == columns.size() - 1) {
+                else if (columnIndex == columns.size() - 1) { // assuming Dates is always the last column
                     dates.push_back(column); // Add date to the dates vector
                 }
                 columnIndex++;
@@ -113,6 +113,7 @@ public:
         }
 
         file.close();
+        calculateLogReturns();
     }
 
     string getTicker() { return ticker; }
@@ -122,4 +123,6 @@ public:
     string getLastDate() { return lastDate; }
     double getRSI() { return RSI14; }
     vector<double> getMACD() { return MACD; }
+    vector<double> getLogReturns() { return logReturns; }
+    
 };
