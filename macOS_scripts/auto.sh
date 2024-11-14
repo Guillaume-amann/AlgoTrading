@@ -6,6 +6,8 @@ cd /Users/guillaume/AlgoTrading/
 echo "------------------INIT------------------"
 echo
 
+python3 /Users/guillaume/AlgoTrading/Web/getStockPrice.py
+
 # Run both scripts in the background and capture their outputs
 output1=$(./Instruments/stockAnalysis 2>&1 & pid1=$!)
 output2=$(./Instruments/optionPricer 2>&1 & pid2=$!)
