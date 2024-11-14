@@ -14,7 +14,6 @@ private:
     double strikePrice;     // Strike price of the option (K)
     double timeToMaturity;  // Time to maturity (T) in years
     double volatility;      // Volatility (sigma) in %
-    double impliedVolatility;
     double riskFreeRate;    // Risk-free interest rate (r) in %
     double dividendYield;   // Dividend yield (q)
     
@@ -22,6 +21,7 @@ private:
     string modelType;       // Model type ('BSM', 'Heston')
 
     double optionPrice;
+    double lastPrice;       // Market Price
 
     // Greeks
     double deltaValue, gammaValue, vegaValue, rhoValue, thetaValue;
@@ -36,10 +36,10 @@ private:
     }
 
 public:
-    StockOption(double S, double K, double T, double sigma, double r, char type = 'C', double q = 0.0, string model = "BSM")
-        : stockPrice(S), strikePrice(K), timeToMaturity(T), volatility(sigma), riskFreeRate(r), optionType(type), dividendYield(q), modelType(model) {
+    StockOption(double S, double K, double T, double r, double P, char type = 'C', double q = 0.0, string model = "BSM")
+        : stockPrice(S), strikePrice(K), timeToMaturity(T), riskFreeRate(r), lastPrice(P), optionType(type), dividendYield(q), modelType(model) {
 
-        impliedVolatility = calculateImpliedVolatility();
+        volatility = calculateImpliedVolatility(lastPrice);
         optionPrice = price();
         deltaValue = delta();
         gammaValue = gamma();
@@ -111,42 +111,26 @@ public:
         return thetaValue;
     }
 
-    double calculateImpliedVolatility(double marketPrice=0.0, double tolerance=1e-5, int maxIterations=100) {
-        if (marketPrice == 0.0) {
-            marketPrice = optionPrice;  // Use the current option price if no market price is given.
-        }
+    double calculateImpliedVolatility(double marketPrice, double tolerance = 1e-2, int maxIterations = 1000) {
+        // Function pointers for BSM pricing and Vega
+        std::function<double()> pricingFunc = std::bind(&StockOption::BSM_price, this);
+        std::function<double()> vegaFunc = std::bind(&StockOption::vega, this);
+        
+        // Call the Bisection method
+        double impliedVolBisection = bisectionMethod(pricingFunc, 0.001, 5.0, marketPrice, tolerance);
+        cout << "Implied Volatility (Bisection): " << impliedVolBisection << endl;
 
-        auto pricingFunction = [this](double vol) {
-            this->volatility = vol;
-            return price();
-        };
+        // Call the Newton-Raphson method
+        double impliedVolNewton = newtonRaphsonMethod(pricingFunc, vegaFunc, 0.2, marketPrice, tolerance);
+        cout << "Implied Volatility (Newton-Raphson): " << impliedVolNewton << endl;
 
-        auto vegaFunction = [this](double vol) {
-            this->volatility = vol;
-            return vega();
-        };
+        // Call the Secant method
+        double impliedVolSecant = secantMethod(pricingFunc, 0.001, 0.5, marketPrice, tolerance);
+        cout << "Implied Volatility (Secant): " << impliedVolSecant << endl;
 
-        try {
-            // Call the Bisection method
-            double impliedVolBisection = bisectionMethod(pricingFunction, 0.001, 5.0);
-            cout << "Implied Volatility (Bisection): " << impliedVolBisection << endl;
-
-            // Call the Newton-Raphson method
-            double impliedVolNewton = newtonRaphsonMethod(vegaFunction, vegaFunction, 0.001);
-            cout << "Implied Volatility (Newton-Raphson): " << impliedVolNewton << endl;
-
-            // Call the Secant method
-            double impliedVolSecant = secantMethod(pricingFunction, 0.001, 0.5);
-            cout << "Implied Volatility (Secant): " << impliedVolSecant << endl;
-
-            // Return the first method's result as default
-            impliedVolatility = impliedVolBisection;
-            return impliedVolatility;
-
-        } catch (const std::exception& e) {
-            cerr << "Error in calculating implied volatility: " << e.what() << endl;
-            throw;
-        }
+        // Return the first method's result as default
+        volatility = impliedVolBisection;
+        return volatility;
     }
 
     void plotDataForPython(const string& filename = "./Database/option_data.csv") {
@@ -156,7 +140,7 @@ public:
         }
 
         file << "StockPrice,StrikePrice,TimeToMaturity,ImpliedVolatility\n";
-        file << stockPrice << "," << strikePrice << "," << timeToMaturity << "," << impliedVolatility << "\n";
+        file << stockPrice << "," << strikePrice << "," << timeToMaturity << "," << volatility << "\n";
         
         file.close();
     }
@@ -166,10 +150,10 @@ public:
     double getStrikePrice() const { return strikePrice; }
     double getTimeToMaturity() const { return timeToMaturity; }
     double getVolatility() const { return volatility; }
-    double getImpliedVolatility() const { return impliedVolatility; }
     double getRiskFreeRate() const { return riskFreeRate; }
     double getDividendYield() const { return dividendYield; }
     char getOptionType() const { return optionType; }
+    double getlastPrice() const { return lastPrice; }
 
     void displayGreeks() const {
         cout << "Delta: " << deltaValue << endl;

@@ -72,7 +72,7 @@ double newtonRaphsonMethod(std::function<double(double)> f, std::function<double
 }
 
 // Bisection Method
-double bisectionMethod(function<double(double)> f, double lowerBound, double upperBound, double tolerance = 1e-6, int maxIterations = 100) {
+double bisectionMethod(function<double()> f, double lowerBound, double upperBound, double tolerance = 1e-6, int maxIterations = 100) {
     if (f(lowerBound) * f(upperBound) > 0) {
         throw invalid_argument("Function values at the bounds must have opposite signs.");
     }
@@ -96,7 +96,7 @@ double bisectionMethod(function<double(double)> f, double lowerBound, double upp
 }
 
 // Secant Method
-double secantMethod(function<double(double)> f, double x0, double x1, double tolerance = 1e-6, int maxIterations = 100) {
+double secantMethod(function<double()> f, double x0, double x1, double tolerance = 1e-6, int maxIterations = 100) {
     for (int i = 0; i < maxIterations; ++i) {
         double fx0 = f(x0);
         double fx1 = f(x1);
@@ -117,7 +117,7 @@ double secantMethod(function<double(double)> f, double x0, double x1, double tol
 }
 
 // Brent's Method
-double brentMethod(function<double(double)> f, double lowerBound, double upperBound, double tolerance = 1e-6, int maxIterations = 100) {
+double brentMethod(function<double()> f, double lowerBound, double upperBound, double tolerance = 1e-6, int maxIterations = 100) {
     if (f(lowerBound) * f(upperBound) > 0) {
         throw invalid_argument("Function values at the bounds must have opposite signs.");
     }
