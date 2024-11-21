@@ -13,8 +13,10 @@ let standard_deviation sample =
   sqrt variance
 
 (* Function to calculate the t-statistic for a one-sample test *)
-let one_sample_t_test sample population_mean =
+(* It is very similar to the z-score but with the difference that t-statistic is
+used when the sample size is small or the population standard deviation is unknown. *)
+let one_sample_t_test sample hypothesis =
   let sample_mean = mean sample in
   let sample_std_dev = standard_deviation sample in
   let n = float_of_int (List.length sample) in
-  (sample_mean -. population_mean) /. (sample_std_dev /. sqrt n)
+  (sample_mean -. hypothesis) /. (sample_std_dev /. sqrt n)

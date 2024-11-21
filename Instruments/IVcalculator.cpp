@@ -49,7 +49,7 @@ void processCSV(const string& filename) {
     }
 
     // Output results to a new CSV
-    ofstream output("output.csv");
+    ofstream output("../Database/output.csv");
     if (!output.is_open()) {
         cerr << "Error: Unable to create output file." << endl;
         return;

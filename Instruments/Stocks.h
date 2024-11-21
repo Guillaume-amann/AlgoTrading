@@ -64,7 +64,7 @@ private:
     }
 
 public:
-    Stock(const string& stockTicker): ticker(stockTicker), lastPrice(0.0), RSI14(0.0) {
+    Stock(const string& stockTicker): ticker(stockTicker), lastPrice(0.0), RSI14(0.0), MACD(0.0) {
         ifstream file("/Users/guillaume/AlgoTrading/Database/Universe.csv");
         
         string line;
@@ -114,6 +114,8 @@ public:
 
         file.close();
         calculateLogReturns();
+        RSI14 = calculateRSI();
+        calculateMACD();
     }
 
     string getTicker() { return ticker; }

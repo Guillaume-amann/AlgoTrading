@@ -1,1 +1,1 @@
-IsNormal.ml: List
+isnormal.ml: List

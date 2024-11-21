@@ -1,1 +1,1 @@
-Test.ml: IsNormal Printf
+test.ml: Array Isnormal Printf
