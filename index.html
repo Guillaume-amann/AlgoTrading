@@ -7,68 +7,93 @@
     <style>
         body {
             margin: 0;
-            padding: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        p {
+            line-height: 1.6;
+        }
+        nav ul {
             display: flex;
-            justify-content: center;
-            align-items: flex-start;
+            gap: 20px;
+            padding: 10px 0;
+            list-style: none;
+            background-color: #ddd;
+        }
+        nav ul li {
+            margin: 0;
+        }
+        nav ul li a {
+            text-decoration: none;
+            color: #007BFF;
+        }
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+        .pdf-container {
+            display: flex;
             flex-wrap: wrap;
             gap: 20px;
-            box-sizing: border-box;
         }
-
-        embed {
-            flex: 1 1 calc(100% / 4 - 20px); /* Adjusts to fit 4 items per row with gaps */
-            max-width: calc(100% / 4 - 20px); /* Prevents stretching beyond intended size */
-            height: auto;
-            aspect-ratio: 2 / 3; /* Ensures a consistent height-to-width ratio */
+        object {
+            flex: 1 1 calc(100% / 4 - 20px);
+            max-width: calc(100% / 4 - 20px);
+            height: 300px;
         }
-
         @media (max-width: 1200px) {
-            embed {
-                flex: 1 1 calc(100% / 3 - 20px); /* 3 items per row on medium screens */
+            object {
+                flex: 1 1 calc(100% / 3 - 20px);
             }
         }
-
         @media (max-width: 800px) {
-            embed {
-                flex: 1 1 calc(100% / 2 - 20px); /* 2 items per row on small screens */
+            object {
+                flex: 1 1 calc(100% / 2 - 20px);
             }
         }
-
         @media (max-width: 500px) {
-            embed {
-                flex: 1 1 100%; /* Stacks items on extra-small screens */
+            object {
+                flex: 1 1 100%;
             }
         }
     </style>
 </head>
 <body>
     <nav>
-        <a href="#about">About</a>
-        <a href="#packages">Packages</a>
-        <a href="src/README.md">AlgoTrading</a>
-    </nav>
-        <h1>my achievments</h1>
-            <embed src="docs/CSX.pdf" />
-            <embed src="docs/WAB.pdf" />
-            <embed src="docs/FinalReport.pdf" />
-            <embed src="docs/CID02492153-Research Paper-Graham.pdf" />
-            <embed src="docs/PolicyBrief.pdf" />
-
-        <h2 id="about">About us</h2>
-        <p>At <b>Around the world</b>, we are a team of passionate travelers
-            dedicated to helping our clients experience the world. With years of
-            experience in the travel industry, our knowledgeable and experienced 
-            staff will work with you to plan and book your next journey.
-        </p>
-        <h2 id="packages">Packages</h2>
         <ul>
-            <li>Adults</li>
-            <li>School groups</li>
-            <li>Students</li>
-            <li>Family</li>
-            <li>Corporate</li>
-            <li>Honeymoon</li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#packages">Packages</a></li>
+            <li><a href="https://github.com/username/repository/blob/main/src/README.md" target="_blank">AlgoTrading</a></li>
         </ul>
+    </nav>
+    <h1>My Achievements</h1>
+    <div class="pdf-container">
+        <object data="docs/CSX.pdf" type="application/pdf">
+            <p>PDF cannot be displayed. <a href="docs/CSX.pdf" target="_blank">Download the PDF</a>.</p>
+        </object>
+        <object data="docs/WAB.pdf" type="application/pdf">
+            <p>PDF cannot be displayed. <a href="docs/WAB.pdf" target="_blank">Download the PDF</a>.</p>
+        </object>
+        <object data="docs/FinalReport.pdf" type="application/pdf">
+            <p>PDF cannot be displayed. <a href="docs/FinalReport.pdf" target="_blank">Download the PDF</a>.</p>
+        </object>
+        <object data="docs/CID02492153-Research Paper-Graham.pdf" type="application/pdf">
+            <p>PDF cannot be displayed. <a href="docs/CID02492153-Research Paper-Graham.pdf" target="_blank">Download the PDF</a>.</p>
+        </object>
+    </div>
+    <h2 id="about">About Us</h2>
+    <p>At <b>Around the World</b>, we are a team of passionate travelers dedicated to helping our clients experience the world. With years of experience in the travel industry, our knowledgeable staff will work with you to plan and book your next journey.</p>
+    <h2 id="packages">Packages</h2>
+    <ul>
+        <li>Adults</li>
+        <li>School Groups</li>
+        <li>Students</li>
+        <li>Family</li>
+        <li>Corporate</li>
+        <li>Honeymoon</li>
+    </ul>
 </body>
 </html>
