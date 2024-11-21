@@ -1,13 +1,28 @@
-.leftside, .rightside {
-    height: 50vh; 
-    width: 100%;
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background-color: #f9f9f9;
 }
-@media screen and (min-width: 768px){
-    .leftside, .rightside {height: 100vh;}
+h1, h2 {
+    color: #333;
 }
-.leftside{
-    background: red;
+p {
+    line-height: 1.6;
 }
-.rightside {
-    background: blue;
+nav ul {
+    display: flex;
+    gap: 20px;
+    padding: 10px 0;
+    list-style: none;
+    background-color: #ddd;
+}
+nav ul li {
+    margin: 0;
+}
+nav ul li a {
+    text-decoration: none;
+    color: #007BFF;
+}
+nav ul li a:hover {
+    text-decoration: underline;
 }
