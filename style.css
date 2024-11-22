@@ -1,3 +1,15 @@
+@media (max-width: 1200px) { object {flex: 1 1 calc(100% / 3 - 20px);} }
+@media (max-width: 800px) { object {flex: 1 1 calc(100% / 2 - 20px);} }
+@media (max-width: 500px) { object {flex: 1 1 100%;} }
+
+@font-face {
+    font-family: 'avenir_next_lt_proregular';
+    src: url('/fonts/26301410506-webfont.woff2') format('woff2'),
+         url('/fonts/26301410506-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
 header {
     position: fixed;
     top: 0;
@@ -15,7 +27,6 @@ nav ul {
     margin: 0;
     padding: 10px; /* Padding inside the nav links */
     list-style: none;
-    background-color: #ddd; /* Matches the header's background color */
 }
 
 nav ul li {
@@ -29,15 +40,6 @@ nav ul li a {
 
 nav ul li a:hover {
     text-decoration: underline;
-}
-
-@font-face {
-    font-family: 'avenir_next_lt_proregular';
-    src: url('/fonts/26301410506-webfont.woff2') format('woff2'),
-         url('/fonts/26301410506-webfont.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-
 }
 
 body {
@@ -67,22 +69,4 @@ object {
     flex: 1 1 calc(100% / 4 - 20px);
     max-width: calc(100% / 4 - 20px);
     height: 300px;
-}
-
-@media (max-width: 1200px) {
-    object {
-        flex: 1 1 calc(100% / 3 - 20px);
-    }
-}
-
-@media (max-width: 800px) {
-    object {
-        flex: 1 1 calc(100% / 2 - 20px);
-    }
-}
-
-@media (max-width: 500px) {
-    object {
-        flex: 1 1 100%;
-    }
 }
