@@ -3,6 +3,7 @@ header {
     top: 0;
     left: 0;
     width: 100%;
+    color: white;
     z-index: 1000; /* Keeps the header above other elements */
     background-color: #011893; /* Header background color */
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Optional shadow for visibility */
