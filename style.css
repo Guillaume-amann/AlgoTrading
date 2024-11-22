@@ -42,6 +42,7 @@ nav ul li a:hover {
 body {
     margin: 0;
     font-family: 'avenir_next_lt_proregular', sans-serif;
+    color: #000C47;
     padding-top: 60px; /* Prevents header overlap with content */
     background-color: #f9f9f9; /* Light background color */
 }
