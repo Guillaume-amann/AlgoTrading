@@ -57,6 +57,12 @@ main {
     background-color: white;
 }
 
+main div {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
 main b {
     color: #011893;
     line-height: 1.2;
@@ -66,6 +72,49 @@ h1, h2 {
     font-family: 'Times New Roman', Times, serif;
     font-size: 32;
     color: #011893;
+}
+
+.button-container {
+    display: flex; /* Use flexbox for layout */
+    justify-content: center; /* Center items horizontally */
+    gap: 20px; /* Add space between the buttons */
+    margin: 20px 0; /* Add some spacing above and below */
+}
+
+.custom-button {
+    width: 350px; /* Custom width */
+    height: 80px; /* Custom height */
+    padding: 10px 20px; /* Padding inside the button */
+    font-size: 18px; /* Font size */
+    background: linear-gradient(45deg, #000C47, #011893);
+    color: white; /* Text color */
+    border: none; /* Remove border */
+    border-radius: 3px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s, transform 0.2s; /* Smooth transition for hover effects */
+}
+
+.back-button {
+    width: 150px; /* Custom width */
+    height: 50px; /* Custom height */
+    padding: 10px 20px; /* Padding inside the button */
+    font-size: 18px; /* Font size */
+    background: linear-gradient(45deg, #000C47, #011893);
+    color: white; /* Text color */
+    border: none; /* Remove border */
+    border-radius: 3px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s, transform 0.2s; /* Smooth transition for hover effects */
+}
+
+.custom-button:hover {
+    filter: brightness(1.4); /* Increase brightness by 20% */
+    transform: scale(1.01); /* Slightly enlarge the button on hover */
+}
+
+.back-button:hover {
+    filter: brightness(1.4); /* Increase brightness by 20% */
+    transform: scale(1.01); /* Slightly enlarge the button on hover */
 }
 
 footer {
@@ -84,12 +133,14 @@ footer {
 
 .pdf-container {
     display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
+    justify-content: space-between; /* Ensures space between PDFs */
+    width: 100%; /* Takes up the full width of the main */
+    gap: 20px; /* Space between the PDFs */
+    padding: 0; /* Remove any default padding */
 }
 
-object {
-    flex: 1 1 calc(100% / 4 - 20px);
-    max-width: calc(100% / 4 - 20px);
-    height: 300px;
+.pdf-container object {
+    flex: 1; /* Allow each PDF to take equal space */
+    height: 90vh; /* Adjust height to fit within the viewport */
+    border: 1px solid #ccc; /* Optional: Add a border for better visibility */
 }
