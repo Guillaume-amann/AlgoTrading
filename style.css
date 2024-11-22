@@ -1,28 +1,84 @@
-body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-    background-color: #f9f9f9;
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; /* Keeps the header above other elements */
+    background-color: #ddd; /* Header background color */
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Optional shadow for visibility */
 }
-h1, h2 {
-    color: #333;
-}
-p {
-    line-height: 1.6;
-}
+
 nav ul {
     display: flex;
     gap: 20px;
-    padding: 10px 0;
+    margin: 0;
+    padding: 10px; /* Padding inside the nav links */
     list-style: none;
-    background-color: #ddd;
+    background-color: #ddd; /* Matches the header's background color */
 }
+
 nav ul li {
     margin: 0;
 }
+
 nav ul li a {
     text-decoration: none;
     color: #007BFF;
 }
+
 nav ul li a:hover {
     text-decoration: underline;
+}
+
+@font-face {
+    font-family: 'Avenir Next LT Pro';
+    src: url('fonts/AvenirNextLTPro-Regular.woff2') format('woff2'),
+         url('fonts/AvenirNextLTPro-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    margin: 0;
+    font-family: 'Avenir Next LT Pro', sans-serif;
+    padding-top: 60px; /* Prevents header overlap with content */
+    background-color: #f9f9f9; /* Light background color */
+}
+
+h1, h2 {
+    color: #333;
+}
+
+p {
+    line-height: 1.6; /* Improves text readability */
+}
+
+.pdf-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+object {
+    flex: 1 1 calc(100% / 4 - 20px);
+    max-width: calc(100% / 4 - 20px);
+    height: 300px;
+}
+
+@media (max-width: 1200px) {
+    object {
+        flex: 1 1 calc(100% / 3 - 20px);
+    }
+}
+
+@media (max-width: 800px) {
+    object {
+        flex: 1 1 calc(100% / 2 - 20px);
+    }
+}
+
+@media (max-width: 500px) {
+    object {
+        flex: 1 1 100%;
+    }
 }
