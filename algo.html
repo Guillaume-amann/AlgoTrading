@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Library for Position Management and Analysis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        h1, h2 {
+            color: #007BFF;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        code {
+            background-color: #eef;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>Inicio Financial</title>
+
+        <link rel="icon" type="image/png" sizes="16x16" href="/docs/img/logo.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/docs/img/logo.png">
+        <link rel="apple-touch-icon" href="/docs/img/logo.png">
+
+        <link rel="stylesheet" href="style.css">
+    </head>
+
+    <body>
+
+        <header>
+            <h1 style="font-weight:400;color:#f4f4f4;line-height: 0.9;margin:50px;font-family: 'Times New Roman', Times, serif;">Inicio<br>Financial</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#packages">Packages</a></li>
+                    <li><a href="#contact">Contact Us</a></li>
+                    <li><a href="algo.html">AlgoTrading</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+                <h1>Financial Library for Position Management and Analysis</h1>
+                <p>This C++ project provides a financial library designed for managing and analyzing financial positions, specifically focused on bonds, derivatives, and other financial instruments. The library includes a <code>Position</code> class to manage and track position attributes, calculate returns, and monitor portfolio performance.</p>
+            
+                <h2>Features</h2>
+                <ul>
+                    <li>
+                        <strong>Position Management:</strong>
+                        <ul>
+                            <li>Track essential attributes like ticker, price bought, volume, and returns for each position.</li>
+                            <li>Automatically logs daily position data in <code>Portfolio/Positions.csv</code>.</li>
+                            <li>Initializes each <code>Position</code> object with a ticker symbol and corresponding line in <code>Positions.csv</code> for easy data parsing.</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Return Calculations:</strong>
+                        <ul>
+                            <li>The <code>checkPosition</code> method calculates the position's length and return, offering a straightforward overview of performance.</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Data Storage:</strong>
+                        <ul>
+                            <li>Daily positions are saved in CSV format, ensuring a clear record of historical data.</li>
+                            <li>Filename for positions is set to <code>Portfolio/Positions.csv</code> by default.</li>
+                        </ul>
+                    </li>
+                </ul>
+            
+                <h2>Project Structure</h2>
+                <p>Feel free to explore the <strong>Overview.pptx</strong> that maps the architecture of the project.</p>
+            
+                <h2>Requirements</h2>
+                <ul>
+                    <li>C++ compiler (e.g., GCC)</li>
+                    <li>Standard C++ libraries</li>
+                    <li>Python 3.13</li>
+                    <li><code>yfinance</code> Python library</li>
+                </ul>
+            
+                <h2>macOS Version</h2>
+                <p>If on macOS and want to automate the email alerts, please use the scripts in the <code>macOS_scripts</code> folder. Place the <code>auto.sh</code> file somewhere in <code>Users/username/</code> but neither in Documents nor in Downloads as Apple tends to restrict access to these folders. This might lead to:</p>
+                <ul>
+                    <li><code>Unload failed: 5: Input/output error 'Try running launchctl bootout' as root for richer errors.</code></li>
+                    <li><code>/bin/bash ... operation not permitted</code> in the error log file if the script eventually loads.</li>
+                </ul>
+        </main>
+
+        <footer>
+            <p>This is the footer</p>
+        </footer>
+
+    </body>
+</html>
