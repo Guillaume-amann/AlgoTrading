@@ -4,72 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Website</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 20px;
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-        }
-        h1, h2 {
-            color: #333;
-        }
-        p {
-            line-height: 1.6;
-        }
-        nav ul {
-            display: flex;
-            gap: 20px;
-            padding: 10px 0;
-            list-style: none;
-            background-color: #ddd;
-        }
-        nav ul li {
-            margin: 0;
-        }
-        nav ul li a {
-            text-decoration: none;
-            color: #007BFF;
-        }
-        nav ul li a:hover {
-            text-decoration: underline;
-        }
-        .pdf-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-        object {
-            flex: 1 1 calc(100% / 4 - 20px);
-            max-width: calc(100% / 4 - 20px);
-            height: 300px;
-        }
-        @media (max-width: 1200px) {
-            object {
-                flex: 1 1 calc(100% / 3 - 20px);
-            }
-        }
-        @media (max-width: 800px) {
-            object {
-                flex: 1 1 calc(100% / 2 - 20px);
-            }
-        }
-        @media (max-width: 500px) {
-            object {
-                flex: 1 1 100%;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-    <nav>
-        <ul>
-            <li><a href="#about">About</a></li>
-            <li><a href="#packages">Packages</a></li>
-            <li><a href="https://github.com/Guillaume-amann/main/AlgoTrading/" target="_blank">AlgoTrading</a></li>
-        </ul>
-    </nav>
+        <nav>
+            <ul>
+                <li><a href="#about">About</a></li>
+                <li><a href="#packages">Packages</a></li>
+                <li><a href="https://github.com/Guillaume-amann/main/AlgoTrading/" target="_blank">AlgoTrading</a></li>
+            </ul>
+        </nav>
     </header>
     <h1>My Achievements</h1>
     <div class="pdf-container">

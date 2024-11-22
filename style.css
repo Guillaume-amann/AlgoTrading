@@ -31,11 +31,12 @@ nav ul li a:hover {
 }
 
 @font-face {
-    font-family: 'Avenir Next LT Pro';
-    src: url('fonts/AvenirNextLTPro-Regular.woff2') format('woff2'),
-         url('fonts/AvenirNextLTPro-Regular.woff') format('woff');
+    font-family: 'avenir_next_lt_proregular';
+    src: url('/fonts/26301410506-webfont.woff2') format('woff2'),
+         url('/fonts/26301410506-webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
+
 }
 
 body {
