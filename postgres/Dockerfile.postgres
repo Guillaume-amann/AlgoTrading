@@ -1,0 +1,6 @@
+# Dockerfile for Postgres
+FROM postgres:17
+
+COPY ./init-sql/setup.sql /docker-entrypoint-initdb.d/
+
+EXPOSE 5432

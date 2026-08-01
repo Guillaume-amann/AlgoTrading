@@ -1,0 +1,25 @@
+version: "3.9"
+services:
+  web:
+    build:
+      context: ./php
+      dockerfile: Dockerfile.php
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    volumes:
+      - ./php/public:/var/www/html
+    env_file:
+      - .env
+
+  db:
+    build:
+      context: ./postgres
+      dockerfile: Dockerfile.postgres
+    ports:
+      - "55432:5432"
+    env_file:
+      - .env
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
